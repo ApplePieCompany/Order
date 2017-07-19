@@ -116,7 +116,7 @@ class ShareController: NSObject {
 		return _return
 	}
 
-	//イベントリスト作成
+	//イベントリスト作成（ほんとはここでDB舐める）
 	func makeEventList(_days:[Date]) -> [Date]{
 		var _return : [Date] = []
 		let _max = min(Int(arc4random_uniform(UInt32(_days.count))), 10)
@@ -144,12 +144,12 @@ class ShareController: NSObject {
 		return _return
 	}
 
-	//サンプルオーダーリスト作成
+	//サンプルオーダーリスト作成（ほんとはここでDB舐める）
 	func getOrderList() -> [OrderModel]{
 		var _return : [OrderModel] = []
 
 		let CONST_NAME = "商品名"
-		let CONST_COUNT = 25
+		let CONST_COUNT = Int(arc4random_uniform(25))
 
 		for i in 0..<CONST_COUNT{
 			let _no = (i+1)

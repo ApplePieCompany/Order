@@ -8,27 +8,18 @@
 
 import UIKit
 
-class HistoryViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate{
+class HistoryViewController: UIViewController{
 
 	var shareController : ShareController = ShareController()
+	var _HistoryViewModel : HistoryViewModel!
 
-	var myCollectionView:UICollectionView!
+	var myTableView:UITableView!
 	var myCalender : Date!
 	
 	var CONST_TAG = 11
 	var CONST_FRAMESIZE : CGSize!
 	let CONST_WEEK = ["","日", "月", "火", "水", "木", "金", "土"]
-	var CONST_CellIdent = "MyCell"
-	var CONST_ReuseIdent = "Section"
-	var CONST_SECTION = 1
 	var CONST_FORMATTER = "yyyy年MM月dd日"
-	
-	var _Layout_itemSize : CGSize!
-	var _Layout_headerReferenceSize = CGSize(width:0,height:10)
-	var _Layout_sectionInset = UIEdgeInsetsMake(4, 4, 4, 4)
-	
-	var _Collection_Frame : CGRect!
-	var _Collection_HeaderSize : CGSize!
 	
 	var _CellItems: [OrderModel] = []
 	
@@ -52,19 +43,16 @@ class HistoryViewController: UIViewController, UICollectionViewDataSource, UICol
 		// Do any additional setup after loading the view.
 
 		self.CONST_FRAMESIZE = CGSize(width: self.view.frame.width, height: self.view.frame.height)
-		
-		self._Layout_itemSize = CGSize(width:CONST_FRAMESIZE.width, height:CONST_FRAMESIZE.height / 11)
-		self._Collection_Frame = CGRect(x: 0, y: 110, width: CONST_FRAMESIZE.width, height:CONST_FRAMESIZE.height)
-		self._Collection_HeaderSize = CGSize(width: CONST_FRAMESIZE.width, height: 30)
+		_HistoryViewModel = HistoryViewModel(_size:CGRect(x: 0, y: 110, width: self.view.frame.width, height: self.view.frame.height))
 		
 		let appDelegate:AppDelegate = UIApplication.shared.delegate as! AppDelegate
 		self.myCalender = appDelegate.targetDate
-		self.makeCellItems()
+		//		self.makeCellItems()
 		
 		self.view.addSubview(self.makeHeader())
 		
-		self.myCollectionView = self.getCollectionView()
-		self.view.addSubview(myCollectionView)
+		self.myTableView = _HistoryViewModel.myTableView
+		self.view.addSubview(self.myTableView)
 		
 	}
 	
@@ -76,6 +64,7 @@ class HistoryViewController: UIViewController, UICollectionViewDataSource, UICol
 	//Make Header
 	func makeHeader() -> UIView{
 		let _return : UIView = UIView(frame: CGRect(x: 0, y: 0, width: self.view.frame.width, height: 110))
+		_return.tag = 100
 		
 		let CONST_HEIGHT = 25
 		let CONST_WIDTH : Int = Int(self.view.frame.width)
@@ -111,31 +100,6 @@ class HistoryViewController: UIViewController, UICollectionViewDataSource, UICol
 		return _return
 	}
 
-	//Make CellItems
-	func makeCellItems(){
-		self._CellItems = shareController.getOrderList()
-	}
-	
-	// Calender CollectionView
-	func getCollectionView() -> UICollectionView{
-		var _return:UICollectionView!
-		
-		let _Layout : UICollectionViewFlowLayout = UICollectionViewFlowLayout()
-		_Layout.itemSize = _Layout_itemSize
-		//		_Layout.headerReferenceSize = _Layout_headerReferenceSize
-		_Layout.sectionInset = _Layout_sectionInset
-		
-		// CollectionViewを生成.
-		_return = UICollectionView(frame: _Collection_Frame, collectionViewLayout: _Layout)
-		_return.backgroundColor = UIColor.white
-		_return.register(HistoryCustomUICollectionViewCell.self, forCellWithReuseIdentifier: CONST_CellIdent)
-		_return.register(HistoryCollectionReusableView.self, forSupplementaryViewOfKind: UICollectionElementKindSectionHeader, withReuseIdentifier: CONST_ReuseIdent)
-		_return.delegate = self
-		_return.dataSource = self
-		
-		return _return
-	}
-
 	// Calender CollectionView Header
 	func getHeaderText() -> String{
 		let fmt = DateFormatter()
@@ -151,13 +115,20 @@ class HistoryViewController: UIViewController, UICollectionViewDataSource, UICol
 	internal func onClickMyButton(sender: UIButton){
 		switch(sender.tag){
 		case 1 , 2:
+			
+			let _headerView = self.view.viewWithTag(100)
+			_headerView?.removeFromSuperview()
+			
 			var _idx = -1
 			if(sender.tag==2){ _idx = 1 }
 			
-			self.myCalender = shareController.addCalendar(_date: self.myCalender, _month: _idx)
-			self.makeCellItems()
-			myCollectionView.reloadData()
+			self.myCalender = shareController.addCalendar(_date: self.myCalender, _day: _idx)
 			
+			self.view.addSubview(self.makeHeader())
+			
+			//			self.makeCellItems()
+			myTableView.reloadData()
+
 		default:print("error")
 		}
 	}
@@ -173,118 +144,4 @@ class HistoryViewController: UIViewController, UICollectionViewDataSource, UICol
 	}
 	*/
 
-	/*          */
-	/* DELEGATE */
-	/*          */
-	
-	//セクション数
-	internal func numberOfSections(in collectionView: UICollectionView) -> Int {
-		return CONST_SECTION
-	}
-	
-	//セクションヘッダサイズ
-	func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
-		return _Collection_HeaderSize
-	}
-
-	//ヘッダセクションを返す
-	func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView
-	{
-		let headerView = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionElementKindSectionHeader, withReuseIdentifier: CONST_ReuseIdent, for: indexPath) as! HistoryCollectionReusableView
-		return headerView
-	}
-
-	//セルのサイズを設定
-	func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-		let width: CGFloat = 100
-		let height: CGFloat = width
-		return CGSize(width:width, height:height)
-	}
-
-	//セルの垂直方向のマージンを設定
-	func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-		return 0
-	}
-	
-	//セルの水平方向のマージンを設定
-	func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
-		return 0
-	}
-	
-	//Cellの総数を返す
-	func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-		return self._CellItems.count
-	}
-	
-	//Cellに値を設定する
-	func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-		let cell : HistoryCustomUICollectionViewCell = collectionView.dequeueReusableCell(withReuseIdentifier: CONST_CellIdent, for: indexPath as IndexPath) as! HistoryCustomUICollectionViewCell
-		cell.backgroundColor = indexPath.row % 2 == 0 ? UIColor.white : UIColor.lightGray
-		cell.isUserInteractionEnabled = false//デフォはクリックできない
-		
-		cell.seq?.text = String( _CellItems[indexPath.row].Seq)
-		cell.itemName?.text = _CellItems[indexPath.row].ItemName
-		
-		return cell
-	}
-	
-	//セルクリック時の処理
-	func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-	}
-}
-
-// 4 HistoryCollectionView Header
-class HistoryCollectionReusableView: UICollectionReusableView {
-	var seq : UILabel?
-	var itemName : UILabel?
-	
-	required init(coder aDecoder: NSCoder) {
-		super.init(coder: aDecoder)!
-	}
-	
-	override init(frame: CGRect) {
-		super.init(frame: frame)
-		
-		seq = UILabel(frame: CGRect(x:0, y:10, width:frame.width, height:frame.height))
-		seq?.text = "No"
-		seq?.textAlignment = NSTextAlignment.center
-		seq?.font = UIFont(name: "Arial", size: 22)
-		self.addSubview(seq!)
-
-		itemName = UILabel(frame: CGRect(x:50, y:10, width:frame.width, height:frame.height))
-		itemName?.text = "商品名"
-		itemName?.textAlignment = NSTextAlignment.center
-		itemName?.font = UIFont(name: "Arial", size: 22)
-		self.addSubview(itemName!)
-	}
-}
-
-// 4 HistoryCollectionView Cell
-class HistoryCustomUICollectionViewCell : UICollectionViewCell{
-	var seq : UILabel?
-	var itemName : UILabel?
-	
-	required init(coder aDecoder: NSCoder) {
-		super.init(coder: aDecoder)!
-	}
-	
-	override init(frame: CGRect) {
-		super.init(frame: frame)
-		
-		seq = UILabel(frame: CGRect(x:0, y:0, width:frame.width, height:frame.height))
-		seq?.text = "nil"
-		seq?.baselineAdjustment = .none
-		seq?.lineBreakMode = .byTruncatingTail
-		seq?.textAlignment = NSTextAlignment.center
-		seq?.adjustsFontSizeToFitWidth = true
-		self.contentView.addSubview(seq!)
-		
-		itemName = UILabel(frame: CGRect(x:50, y:0, width:frame.width, height:frame.height))
-		itemName?.text = "nil"
-		itemName?.baselineAdjustment = .none
-		itemName?.lineBreakMode = .byTruncatingTail
-		itemName?.textAlignment = NSTextAlignment.center
-		itemName?.adjustsFontSizeToFitWidth = true
-		self.contentView.addSubview(itemName!)
-	}
 }

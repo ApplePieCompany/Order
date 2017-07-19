@@ -22,6 +22,7 @@
 		0A4DF9CF1F1AE382002B5297 /* OrderViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A4DF9CE1F1AE382002B5297 /* OrderViewModel.swift */; };
 		0A7DD0F31F1EFCD100438247 /* SelectItemsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A7DD0F21F1EFCD100438247 /* SelectItemsViewController.swift */; };
 		0AE7F8A01F1F3082009453E3 /* OrderModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AE7F89F1F1F3082009453E3 /* OrderModel.swift */; };
+		0AE7F8A21F1F4084009453E3 /* HistoryViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AE7F8A11F1F4084009453E3 /* HistoryViewModel.swift */; };
 		0AF13DD91F1DDCEE005D5C65 /* list.png in Resources */ = {isa = PBXBuildFile; fileRef = 0AF13DD81F1DDCEE005D5C65 /* list.png */; };
 		0AF13DDB1F1DF905005D5C65 /* HistoryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AF13DDA1F1DF905005D5C65 /* HistoryViewController.swift */; };
 /* End PBXBuildFile section */
@@ -65,6 +66,7 @@
 		0A4DF9CE1F1AE382002B5297 /* OrderViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OrderViewModel.swift; sourceTree = "<group>"; };
 		0A7DD0F21F1EFCD100438247 /* SelectItemsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SelectItemsViewController.swift; sourceTree = "<group>"; };
 		0AE7F89F1F1F3082009453E3 /* OrderModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OrderModel.swift; sourceTree = "<group>"; };
+		0AE7F8A11F1F4084009453E3 /* HistoryViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HistoryViewModel.swift; sourceTree = "<group>"; };
 		0AF13DD81F1DDCEE005D5C65 /* list.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = list.png; sourceTree = "<group>"; };
 		0AF13DDA1F1DF905005D5C65 /* HistoryViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HistoryViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -174,6 +176,7 @@
 				0A4DF9CE1F1AE382002B5297 /* OrderViewModel.swift */,
 				0AF13DDA1F1DF905005D5C65 /* HistoryViewController.swift */,
 				0A7DD0F21F1EFCD100438247 /* SelectItemsViewController.swift */,
+				0AE7F8A11F1F4084009453E3 /* HistoryViewModel.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -328,6 +331,7 @@
 			files = (
 				0A125E801F18B88100B9E34E /* ViewController.swift in Sources */,
 				0A125EB41F18BAFC00B9E34E /* ConfViewController.swift in Sources */,
+				0AE7F8A21F1F4084009453E3 /* HistoryViewModel.swift in Sources */,
 				0AE7F8A01F1F3082009453E3 /* OrderModel.swift in Sources */,
 				0A125E7E1F18B88100B9E34E /* AppDelegate.swift in Sources */,
 				0A125EBC1F18BEDA00B9E34E /* ShareController.swift in Sources */,
