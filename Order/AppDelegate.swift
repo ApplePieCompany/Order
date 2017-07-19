@@ -12,6 +12,9 @@ import UIKit
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
 	var window: UIWindow?
+	
+	var targetDate : Date!
+	
 	private var myTabBarController: MainTabBarController = MainTabBarController()
 
 

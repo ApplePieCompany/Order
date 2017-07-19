@@ -151,7 +151,11 @@ class OrderViewController: UIViewController, UICollectionViewDataSource, UIColle
 		for i in 0..<self._EventList.count{
 			var _comp = Calendar.current.dateComponents([.year, .month, .day, .hour],from:self._EventList[i])
 			_comp.hour = 9
-			_return = _basecomp.year == _comp.year && _basecomp.month == _comp.month && _basecomp.day == _comp.day ? true: false
+			
+			if(_basecomp == _comp){
+				_return = true
+				break
+			}
 		}
 		
 		return _return
@@ -212,9 +216,11 @@ class OrderViewController: UIViewController, UICollectionViewDataSource, UIColle
 	func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
 		let cell : CustomUICollectionViewCell = collectionView.dequeueReusableCell(withReuseIdentifier: CONST_CellIdent, for: indexPath as IndexPath) as! CustomUICollectionViewCell
 		cell.backgroundColor = UIColor.white
+		cell.isUserInteractionEnabled = false//デフォはクリックできない
 		
 		switch(indexPath.section){
 		case 0 , 1:
+			//フォント色
 			if((indexPath.row % 7) == 0){ cell.textLabel?.textColor = DayColor.Sun.Colors }
 			else{
 				if((indexPath.row % 7) == 6){cell.textLabel?.textColor = DayColor.Sat.Colors}
@@ -225,6 +231,11 @@ class OrderViewController: UIViewController, UICollectionViewDataSource, UIColle
 				cell.textLabel?.text = CONST_WEEK[indexPath.row]
 			}
 			else{
+				//過去のフォント色
+				cell.tag = -1
+				let _IsPast = self.IsThisMonth(_date: self._CellItems[indexPath.row]) ? false: true
+				if(_IsPast){ cell.textLabel?.textColor = UIColor.lightGray }
+
 				//日付抽出
 				let calendar = Calendar.current
 				let _day = calendar.component(.day,from:self._CellItems[indexPath.row])
@@ -233,15 +244,19 @@ class OrderViewController: UIViewController, UICollectionViewDataSource, UIColle
 				if(self.IsEvent(_date: self._CellItems[indexPath.row])){
 					let attrText = NSMutableAttributedString(string: "\(_day)\n注文済")
 					let _beg = _day < 10 ? 1 : 2
-					attrText.addAttribute(NSForegroundColorAttributeName,value: UIColor.red,range: NSMakeRange(_beg, 4))
 					attrText.addAttributes([NSFontAttributeName: UIFont.boldSystemFont(ofSize: 24.0)], range: NSMakeRange(0, _beg))
+					attrText.addAttribute(NSForegroundColorAttributeName,value: UIColor.red,range: NSMakeRange(_beg, 4))
+					attrText.addAttributes([NSFontAttributeName: UIFont.systemFont(ofSize: 20)], range: NSMakeRange(_beg, 4))
 					cell.textLabel?.attributedText = attrText
+					cell.isUserInteractionEnabled = true
+					cell.tag = _IsPast ? 0 : 1//過去注文は０、未来注文は１
 				}
-				else{ cell.textLabel?.text = "\(_day)\n" }
+				else{
+					cell.textLabel?.text = "\(_day)\n"
+					cell.tag = _IsPast ? -1 : 1//過去は−１、未来注文は１
+				}
 				
-				if(!self.IsThisMonth(_date: self._CellItems[indexPath.row])){
-					cell.textLabel?.textColor = UIColor.lightGray
-				}
+				if(cell.tag > -1){ cell.isUserInteractionEnabled = true }
 			}
 			
 		default:
@@ -270,9 +285,22 @@ class OrderViewController: UIViewController, UICollectionViewDataSource, UIColle
 	
 	//セルクリック時の処理
 	func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-		let _HistoryViewController : HistoryViewController = HistoryViewController()
-		self.navigationController?.pushViewController(_HistoryViewController, animated: true)
+
+		let appDelegate:AppDelegate = UIApplication.shared.delegate as! AppDelegate
+		appDelegate.targetDate = self._CellItems[indexPath.row]
 		
-		//		print("Date：\(self._CellItems[indexPath.row])")
+		switch(Int((collectionView.cellForItem(at: indexPath)?.tag)!)){
+		case 0:
+			let _HistoryViewController : HistoryViewController = HistoryViewController()
+			self.navigationController?.pushViewController(_HistoryViewController, animated: true)
+
+		case 1:
+			let _SelectItemsViewController : SelectItemsViewController = SelectItemsViewController()
+			self.navigationController?.pushViewController(_SelectItemsViewController, animated: true)
+
+		default:
+			print("error")
+		}
+
 	}
 }

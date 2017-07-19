@@ -114,13 +114,28 @@ class ShareController: NSObject {
 	//イベントリスト作成
 	func makeEventList(_days:[Date]) -> [Date]{
 		var _return : [Date] = []
+		let _max = min(Int(arc4random_uniform(UInt32(_days.count))), 10)
 
-		let _today = Date()
-		var _comp = Calendar.current.dateComponents([.year, .month, .day, .hour],from:_today)
-		_comp.hour = 9
-		_return.append(Calendar.current.date(from: _comp)!)
+		var _temp : [Date] = shuffleArray(_ary: _days)
+		for i in 0..<_max{
+			_return.append(_temp[i])
+		}
 		
 		return _return
 	}
 
+	//乱数
+	func shuffleArray(_ary:[Date]) -> [Date] {
+		var _return = [Date]()
+
+		var indexes = (0 ..< _ary.count).map { $0 }
+		while indexes.count > 0 {
+			let indexOfIndexes = Int(arc4random_uniform(UInt32(indexes.count)))
+			let index = indexes[indexOfIndexes]
+			_return.append(_ary[index])
+			indexes.remove(at: indexOfIndexes)
+		}
+
+		return _return
+	}
 }

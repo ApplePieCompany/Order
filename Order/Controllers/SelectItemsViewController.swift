@@ -1,25 +1,24 @@
 //
-//  HistoryViewController.swift
+//  SelectItemsViewController.swift
 //  Order
 //
-//  Created by TatsuoYagi on 2017/07/18.
+//  Created by TatsuoYagi on 2017/07/19.
 //  Copyright © 2017年 TatsuoYagi. All rights reserved.
 //
 
 import UIKit
 
-class HistoryViewController: UIViewController {
+class SelectItemsViewController: UIViewController {
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		
 		// Do any additional setup after loading the view.
 		
-		self.view.backgroundColor = UIColor.orange
-		
+		self.view.backgroundColor = UIColor.magenta
+
 		let appDelegate:AppDelegate = UIApplication.shared.delegate as! AppDelegate
 		print("===> \(appDelegate.targetDate)")
-
 	}
 	
 	override func didReceiveMemoryWarning() {
