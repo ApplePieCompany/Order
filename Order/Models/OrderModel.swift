@@ -10,12 +10,14 @@ import UIKit
 
 class OrderModel: NSObject {
 
-	public var Seq : Int!
-	public var ItemName : String!
+	public var Name : String!
+	public var Count : Int!
+	public var Tanka : Int!
 
-	init(_Seq : Int, _ItemName : String) {
-		self.Seq = _Seq
-		self.ItemName = _ItemName
+	init(_Name : String, _Count : Int, _Tanka : Int) {
+		self.Name = _Name
+		self.Count = _Count
+		self.Tanka = _Tanka
 	}
 
 }
