@@ -190,6 +190,33 @@ class OrderViewController: UIViewController, UICollectionViewDataSource, UIColle
 		default:return CGSize(width: 0, height: 0)
 		}
 	}
+
+	//ヘッダセクションを返す
+	func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView
+	{
+		let headerView = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionElementKindSectionHeader, withReuseIdentifier: CONST_ReuseIdent, for: indexPath) as! CollectionReusableView
+		headerView.textLabel?.text = self.getHeaderText()
+		headerView.leftButton?.addTarget(self, action: #selector(onClickMyButton(sender:)), for: .touchUpInside)
+		headerView.rightButton?.addTarget(self, action: #selector(onClickMyButton(sender:)), for: .touchUpInside)
+		return headerView
+	}
+
+	//セルのサイズを設定
+	func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+		let width: CGFloat = collectionView.frame.size.width / CGFloat(CONST_DAYS)
+		let height: CGFloat = width
+		return CGSize(width:width, height:height)
+	}
+	
+	//セルの垂直方向のマージンを設定
+	func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
+		return 0
+	}
+	
+	//セルの水平方向のマージンを設定
+	func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
+		return 0
+	}
 	
 	//Cellの総数を返す
 	func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -200,16 +227,6 @@ class OrderViewController: UIViewController, UICollectionViewDataSource, UIColle
 			print("error")
 			return 0
 		}
-	}
-	
-	//セクションを返すメソッド
-	func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView
-	{
-		let headerView = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionElementKindSectionHeader, withReuseIdentifier: CONST_ReuseIdent, for: indexPath) as! CollectionReusableView
-		headerView.textLabel?.text = self.getHeaderText()
-		headerView.leftButton?.addTarget(self, action: #selector(onClickMyButton(sender:)), for: .touchUpInside)
-		headerView.rightButton?.addTarget(self, action: #selector(onClickMyButton(sender:)), for: .touchUpInside)
-		return headerView
 	}
 	
 	//Cellに値を設定する
@@ -264,23 +281,6 @@ class OrderViewController: UIViewController, UICollectionViewDataSource, UIColle
 		}
 		
 		return cell
-	}
-	
-	//セルのサイズを設定
-	func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-		let width: CGFloat = collectionView.frame.size.width / CGFloat(CONST_DAYS)
-		let height: CGFloat = width
-		return CGSize(width:width, height:height)
-	}
-	
-	//セルの垂直方向のマージンを設定
-	func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-		return 0
-	}
-	
-	//セルの水平方向のマージンを設定
-	func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
-		return 0
 	}
 	
 	//セルクリック時の処理

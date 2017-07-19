@@ -80,3 +80,4 @@ class CustomUICollectionViewCell : UICollectionViewCell{
 		self.contentView.addSubview(textLabel!)
 	}
 }
+

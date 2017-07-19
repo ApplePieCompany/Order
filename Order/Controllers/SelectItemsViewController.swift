@@ -9,6 +9,18 @@
 import UIKit
 
 class SelectItemsViewController: UIViewController {
+
+	init() {
+		super.init(nibName: nil, bundle: nil)
+	}
+	
+	required init?(coder aDecoder: NSCoder) {
+		super.init(coder: aDecoder)
+	}
+	
+	required override init(nibName nibNameOrNil: String!, bundle nibBundleOrNil: Bundle!) {
+		super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
+	}
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()

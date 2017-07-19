@@ -12,16 +12,21 @@ class ShareController: NSObject {
 	
 	enum EnumTitle : String{
 		case Order = "注文画面"
+		case History = "注文履歴画面"
 		case Conf = "設定画面"
 	}
 	
+	//タイトル取得
 	func getEnumTitle(_tag : Int) -> String{
 		switch(_tag){
 		case 1:return EnumTitle.Order.rawValue
+		case 11:return EnumTitle.History.rawValue
+		case 2:return EnumTitle.Conf.rawValue
 		default: return EnumTitle.Conf.rawValue
 		}
 	}
 	
+	//日付加算処理
 	func addCalendar(_date : Date, _year : Int=0, _month : Int=0, _day:Int=0, _hour : Int=0, _minute : Int=0, _second:Int=0) -> Date{
 		var _return : Date = _date
 		let calendar = Calendar.current
@@ -124,7 +129,7 @@ class ShareController: NSObject {
 		return _return
 	}
 
-	//乱数
+	//配列シャッフル
 	func shuffleArray(_ary:[Date]) -> [Date] {
 		var _return = [Date]()
 
@@ -138,4 +143,20 @@ class ShareController: NSObject {
 
 		return _return
 	}
+
+	//サンプルオーダーリスト作成
+	func getOrderList() -> [OrderModel]{
+		var _return : [OrderModel] = []
+
+		let CONST_NAME = "商品名"
+		let CONST_COUNT = 25
+
+		for i in 0..<CONST_COUNT{
+			let _no = (i+1)
+			_return.append(OrderModel(_Seq: _no, _ItemName: "\(CONST_NAME)_\(_no)"))
+		}
+		
+		return _return
+	}
+
 }
