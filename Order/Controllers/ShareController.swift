@@ -145,10 +145,13 @@ class ShareController: NSObject {
 	}
 
 	//サンプルオーダーリスト作成（ほんとはここでDB舐める）
-	func getOrderList() -> [OrderModel]{
+	func getOrderList(_date:Date) -> [OrderModel]{
 		var _return : [OrderModel] = []
 
-		let CONST_NAME = "商品名"
+		let fmt = DateFormatter()
+		fmt.dateFormat = "yyyyMMdd"
+		
+		let CONST_NAME = "\(fmt.string(from: _date))_商品名"
 		let CONST_COUNT = Int(arc4random_uniform(25))
 
 		for i in 0..<CONST_COUNT{

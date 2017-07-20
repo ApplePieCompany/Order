@@ -14,6 +14,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 	var window: UIWindow?
 	
 	var targetDate : Date!
+	var eventList : [Date]!
 	
 	private var myTabBarController: MainTabBarController = MainTabBarController()
 

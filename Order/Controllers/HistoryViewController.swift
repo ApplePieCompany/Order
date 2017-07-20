@@ -15,14 +15,14 @@ class HistoryViewController: UIViewController{
 
 	var myTableView:UITableView!
 	var myCalender : Date!
+	var eventList : [Date]!
+	var currentEventNo : Int = -1
 	
 	var CONST_TAG = 11
-	var CONST_FRAMESIZE : CGSize!
 	let CONST_WEEK = ["","日", "月", "火", "水", "木", "金", "土"]
 	var CONST_FORMATTER = "yyyy年MM月dd日"
-	
-	var _CellItems: [OrderModel] = []
-	
+	let CONST_TAGS : [String : Int] = ["Header":100, "List":200]
+
 	init() {
 		super.init(nibName: nil, bundle: nil)
 
@@ -41,19 +41,18 @@ class HistoryViewController: UIViewController{
 		super.viewDidLoad()
 		
 		// Do any additional setup after loading the view.
-
-		self.CONST_FRAMESIZE = CGSize(width: self.view.frame.width, height: self.view.frame.height)
-		_HistoryViewModel = HistoryViewModel(_size:CGRect(x: 0, y: 110, width: self.view.frame.width, height: self.view.frame.height))
-		
 		let appDelegate:AppDelegate = UIApplication.shared.delegate as! AppDelegate
 		self.myCalender = appDelegate.targetDate
-		//		self.makeCellItems()
+		self.eventList = appDelegate.eventList
 		
-		self.view.addSubview(self.makeHeader())
+		for i in 0..<self.eventList.count{
+			if(self.eventList[i] == self.myCalender){
+				self.currentEventNo = i
+				break
+			}
+		}
 		
-		self.myTableView = _HistoryViewModel.myTableView
-		self.view.addSubview(self.myTableView)
-		
+		self.showView(_date: self.myCalender)
 	}
 	
 	override func didReceiveMemoryWarning() {
@@ -64,11 +63,13 @@ class HistoryViewController: UIViewController{
 	//Make Header
 	func makeHeader() -> UIView{
 		let _return : UIView = UIView(frame: CGRect(x: 0, y: 0, width: self.view.frame.width, height: 110))
-		_return.tag = 100
+		_return.tag = CONST_TAGS["Header"]!
 		
 		let CONST_HEIGHT = 25
 		let CONST_WIDTH : Int = Int(self.view.frame.width)
 		let CONST_LOCATION_Y = 75
+		let CONST_FONT = UIFont(name: "Arial", size: 22)
+		let CONST_TITLES : [String: String] = ["left":"＜", "right":"＞"]
 		
 		var leftButton : UIButton?
 		var textLabel : UILabel?
@@ -77,20 +78,20 @@ class HistoryViewController: UIViewController{
 		textLabel = UILabel(frame: CGRect(x:0, y:CONST_LOCATION_Y, width:CONST_WIDTH, height:CONST_HEIGHT))
 		textLabel?.text = getHeaderText()
 		textLabel?.textAlignment = NSTextAlignment.center
-		textLabel?.font = UIFont(name: "Arial", size: 22)
+		textLabel?.font = CONST_FONT
 		_return.addSubview(textLabel!)
 		
 		leftButton = UIButton(frame: CGRect(x:0, y:CONST_LOCATION_Y, width:50, height:CONST_HEIGHT))
-		leftButton?.titleLabel?.font = UIFont(name: "Arial", size: 22)!
-		leftButton?.setTitle("＜", for: .normal)
+		leftButton?.titleLabel?.font = CONST_FONT!
+		leftButton?.setTitle(CONST_TITLES["left"], for: .normal)
 		leftButton?.setTitleColor(UIColor.black, for:.normal)
 		leftButton?.tag = 1
 		leftButton?.addTarget(self, action: #selector(onClickMyButton(sender:)), for: .touchUpInside)
 		_return.addSubview(leftButton!)
 		
 		rightButton = UIButton(frame: CGRect(x:CONST_WIDTH-50, y:CONST_LOCATION_Y, width:50, height:CONST_HEIGHT))
-		rightButton?.titleLabel?.font = UIFont(name: "Arial", size: 22)!
-		rightButton?.setTitle("＞", for: .normal)
+		rightButton?.titleLabel?.font = CONST_FONT!
+		rightButton?.setTitle(CONST_TITLES["right"], for: .normal)
 		rightButton?.setTitleColor(UIColor.black, for:.normal)
 		rightButton?.tag = 2
 		rightButton?.addTarget(self, action: #selector(onClickMyButton(sender:)), for: .touchUpInside)
@@ -111,26 +112,35 @@ class HistoryViewController: UIViewController{
 		return fmt.string(from: self.myCalender)+"(\(CONST_WEEK[weekday]))"
 	}
 	
+	//注文履歴画面表示
+	func showView(_date : Date){
+		if(self.view.viewWithTag(CONST_TAGS["Header"]!) != nil){
+			let _View = self.view.viewWithTag(CONST_TAGS["Header"]!)
+			_View?.removeFromSuperview()
+		}
+		self.view.addSubview(self.makeHeader())
+
+		if(self.view.viewWithTag(CONST_TAGS["List"]!) != nil){
+			let _View = self.view.viewWithTag(CONST_TAGS["List"]!)
+			_View?.removeFromSuperview()
+		}
+
+		self._HistoryViewModel = HistoryViewModel(_size:CGRect(x: 0, y: 110, width: self.view.frame.width, height: self.view.frame.height - 110), _date:_date)
+		self.myTableView = self._HistoryViewModel.myTableView
+		self.myTableView.tag = CONST_TAGS["List"]!
+		self.view.addSubview(self.myTableView)
+	}
+	
 	/* カレンダー送り戻しボタン処理 */
 	internal func onClickMyButton(sender: UIButton){
-		switch(sender.tag){
-		case 1 , 2:
-			
-			let _headerView = self.view.viewWithTag(100)
-			_headerView?.removeFromSuperview()
-			
-			var _idx = -1
-			if(sender.tag==2){ _idx = 1 }
-			
-			self.myCalender = shareController.addCalendar(_date: self.myCalender, _day: _idx)
-			
-			self.view.addSubview(self.makeHeader())
-			
-			//			self.makeCellItems()
-			myTableView.reloadData()
+		if(sender.tag == 1 && self.currentEventNo == 0){ return }
+		if(sender.tag == 2 && self.currentEventNo == self.eventList.count-1){ return }
 
-		default:print("error")
-		}
+		if(sender.tag == 1){ self.currentEventNo -= 1 }
+		if(sender.tag == 2){ self.currentEventNo += 1 }
+		
+		self.myCalender = self.eventList[self.currentEventNo]
+		self.showView(_date: self.myCalender)
 	}
 	
 	

@@ -12,6 +12,7 @@ class HistoryViewModel: NSObject, UITableViewDelegate, UITableViewDataSource{
 
 	var shareController : ShareController = ShareController()
 
+	public var myCalendar:Date!
 	public var DataSources : [OrderModel] = []
 
 	
@@ -26,16 +27,17 @@ class HistoryViewModel: NSObject, UITableViewDelegate, UITableViewDataSource{
 	
 	var myTableView : UITableView!
 	
-	init(_size:CGRect) {
+	init(_size:CGRect, _date:Date) {
 		super.init()
 		
-		self.DataSources = shareController.getOrderList()
+		self.myCalendar = _date
+		self.DataSources = shareController.getOrderList(_date:self.myCalendar)
 		
 		self.CONST_SIZE = _size
 
-		self.myTableView = UITableView(frame: self.CONST_SIZE, style: .plain)
+		self.myTableView = UITableView(frame: self.CONST_SIZE, style: .grouped)
 		self.myTableView.backgroundColor = UIColor.white
-		self.myTableView.rowHeight = 60
+		self.myTableView.rowHeight = 70
 		self.myTableView.delegate = self
 		self.myTableView.dataSource = self
 		self.myTableView.register(OrderItem.self, forCellReuseIdentifier: NSStringFromClass(OrderItem.self))
@@ -90,9 +92,9 @@ class OrderItem: UITableViewCell {
 	var CONST_LABEL_FONT = UIFont(name: "Arial", size: 14)
 	
 	var CONST_LABEL_CGRECT : [String : CGRect] = [
-		"Count" : CGRect(x: 50, y: 30, width: 150, height: 25),
-		"Tanka" : CGRect(x: 150, y: 30, width: 150, height: 25),
-		"Kingaku" : CGRect(x: 250, y: 30, width: 150, height: 25),
+		"Count" : CGRect(x: 20, y: 40, width: 100, height: 25),
+		"Tanka" : CGRect(x: 130, y: 40, width: 100, height: 25),
+		"Kingaku" : CGRect(x: 240, y: 40, width: 100, height: 25),
 	]
 	
 	override init(style: UITableViewCellStyle, reuseIdentifier: String?) {

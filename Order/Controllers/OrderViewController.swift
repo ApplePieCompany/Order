@@ -287,6 +287,7 @@ class OrderViewController: UIViewController, UICollectionViewDataSource, UIColle
 
 		let appDelegate:AppDelegate = UIApplication.shared.delegate as! AppDelegate
 		appDelegate.targetDate = self._CellItems[indexPath.row]
+		appDelegate.eventList = self._EventList.sorted(by: {$0.0 < $0.1})
 		
 		switch(Int((collectionView.cellForItem(at: indexPath)?.tag)!)){
 		case 0:
