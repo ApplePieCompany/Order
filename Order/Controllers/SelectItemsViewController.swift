@@ -8,10 +8,34 @@
 
 import UIKit
 
-class SelectItemsViewController: UIViewController {
+class SelectItemsViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate{
 
+	var shareController : ShareController = ShareController()
+	
+	var myCollectionView:UICollectionView!
+	var myCalender : Date!
+
+	var CONST_TAG = 12
+	var CONST_FRAMESIZE : CGSize!
+	var CONST_CellIdent = "MyCell"
+	var CONST_ReuseIdent = "Section"
+	var CONST_SECTION = 2
+	var CONST_TAGS : [String:Int] = ["Select":100, "List":200]
+
+	var _Layout_itemSize : CGSize!
+	var _Layout_headerReferenceSize = CGSize(width:0,height:10)
+	var _Layout_sectionInset = UIEdgeInsetsMake(4, 4, 4, 4)
+	
+	var _Collection_Frame : CGRect!
+	var _Collection_HeaderSize : CGSize!
+
+	var _CellItems: [Date] = []
+	
+	
 	init() {
 		super.init(nibName: nil, bundle: nil)
+		
+		self.title = shareController.getEnumTitle(_tag: CONST_TAG)
 	}
 	
 	required init?(coder aDecoder: NSCoder) {
@@ -27,15 +51,68 @@ class SelectItemsViewController: UIViewController {
 		
 		// Do any additional setup after loading the view.
 		
-		self.view.backgroundColor = UIColor.magenta
-
 		let appDelegate:AppDelegate = UIApplication.shared.delegate as! AppDelegate
-		print("===> \(appDelegate.targetDate)")
+		self.myCalender = appDelegate.targetDate
+
+		self.CONST_FRAMESIZE = CGSize(width: self.view.frame.width, height: self.view.frame.height)
+		
+		self._Layout_itemSize = CGSize(width:CONST_FRAMESIZE.width / 9, height:CONST_FRAMESIZE.height / 11)
+		self._Collection_Frame = CGRect(x: 0, y: 0, width: CONST_FRAMESIZE.width, height:CONST_FRAMESIZE.height - 49)
+		self._Collection_HeaderSize = CGSize(width: CONST_FRAMESIZE.width, height: 40)
+		
+		self.myCollectionView = self.getCollectionView()
+		self.view.addSubview(self.myCollectionView)
 	}
 	
 	override func didReceiveMemoryWarning() {
 		super.didReceiveMemoryWarning()
 		// Dispose of any resources that can be recreated.
+	}
+
+	// Calender CollectionView
+	func getCollectionView() -> UICollectionView{
+		var _return:UICollectionView!
+		
+		let _Layout : UICollectionViewFlowLayout = UICollectionViewFlowLayout()
+		_Layout.itemSize = _Layout_itemSize
+		//		_Layout.headerReferenceSize = _Layout_headerReferenceSize
+		_Layout.sectionInset = _Layout_sectionInset
+		
+		// CollectionViewを生成.
+		_return = UICollectionView(frame: _Collection_Frame, collectionViewLayout: _Layout)
+		_return.tag = CONST_TAGS["Select"]!
+		_return.backgroundColor = UIColor.white
+		_return.register(SelectCustomUICollectionViewCell.self, forCellWithReuseIdentifier: CONST_CellIdent)
+		_return.register(SelectCollectionReusableView.self, forSupplementaryViewOfKind: UICollectionElementKindSectionHeader, withReuseIdentifier: CONST_ReuseIdent)
+		_return.delegate = self
+		_return.dataSource = self
+		
+		return _return
+	}
+	
+	// Calender CollectionView Header
+	func getHeaderText() -> String{
+		return "<<HEADER>>"
+	}
+
+	internal func segconChanged(segcon: UISegmentedControl){
+		
+		switch segcon.selectedSegmentIndex {
+		case 0:
+			if(self.view.viewWithTag(CONST_TAGS["List"]!) != nil){
+				let _View = self.view.viewWithTag(CONST_TAGS["List"]!)
+				_View?.removeFromSuperview()
+			}
+
+		case 1:
+			if(self.view.viewWithTag(CONST_TAGS["Select"]!) != nil){
+				let _View = self.view.viewWithTag(CONST_TAGS["Select"]!)
+				_View?.removeFromSuperview()
+			}
+			
+		default:
+			print("Error")
+		}
 	}
 	
 	
@@ -48,5 +125,133 @@ class SelectItemsViewController: UIViewController {
 	// Pass the selected object to the new view controller.
 	}
 	*/
+
+	/*          */
+	/* DELEGATE */
+	/*          */
 	
+	//セクション数
+	internal func numberOfSections(in collectionView: UICollectionView) -> Int {
+		return CONST_SECTION
+	}
+	
+	//セクションヘッダサイズ
+	func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
+		switch(section){
+		case 0:return _Collection_HeaderSize
+		default:return CGSize(width: 0, height: 0)
+		}
+	}
+	
+	//ヘッダセクションを返す
+	func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView
+	{
+		let headerView = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionElementKindSectionHeader, withReuseIdentifier: CONST_ReuseIdent, for: indexPath) as! SelectCollectionReusableView
+		headerView.backgroundColor = UIColor.lightGray
+		headerView.mySegcon?.selectedSegmentIndex = 0
+		headerView.mySegcon?.addTarget(self, action: #selector(self.segconChanged(segcon:)), for: UIControlEvents.valueChanged)
+		return headerView
+	}
+	
+	//セルのサイズを設定
+	func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+		let width: CGFloat = collectionView.frame.size.width
+		let height: CGFloat = width
+		return CGSize(width:width, height:height)
+	}
+	
+	//セルの垂直方向のマージンを設定
+	func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
+		return 0
+	}
+	
+	//セルの水平方向のマージンを設定
+	func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
+		return 0
+	}
+	
+	//Cellの総数を返す
+	func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+		switch(section){
+		case 0:return 1
+		case 1:return self._CellItems.count
+		default:
+			print("error")
+			return 0
+		}
+	}
+	
+	//Cellに値を設定する
+	func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+		let cell : SelectCustomUICollectionViewCell = collectionView.dequeueReusableCell(withReuseIdentifier: CONST_CellIdent, for: indexPath as IndexPath) as! SelectCustomUICollectionViewCell
+		cell.backgroundColor = UIColor.white
+		cell.isUserInteractionEnabled = false//デフォはクリックできない
+		
+		switch(indexPath.section){
+		case 0 , 1:
+			if(indexPath.section == 0){
+				cell.textLabel?.text = "HEADERS"
+			}
+			else{
+				cell.textLabel?.text = "ITEMS"
+			}
+			
+		default:
+			print("section error")
+		}
+		
+		return cell
+	}
+	
+	//セルクリック時の処理
+	func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+	}
 }
+
+// 4 CollectionView Header
+class SelectCollectionReusableView: UICollectionReusableView {
+
+	var mySegcon: UISegmentedControl?
+	let myArray: NSArray = ["商品選択","買い物かご"]
+	
+	required init(coder aDecoder: NSCoder) {
+		super.init(coder: aDecoder)!
+	}
+	
+	override init(frame: CGRect) {
+		super.init(frame: frame)
+		
+		let attrForeCOlor = [ NSForegroundColorAttributeName: UIColor.blue ]
+		
+		mySegcon = UISegmentedControl(items: myArray as [AnyObject])
+		mySegcon?.setTitleTextAttributes(attrForeCOlor, for: UIControlState.selected)
+		mySegcon?.center = CGPoint(x: frame.width/2, y: 20)
+		mySegcon?.backgroundColor = UIColor.blue
+		mySegcon?.tintColor = UIColor.white
+		mySegcon?.layer.cornerRadius = 5
+		self.addSubview(mySegcon!)
+	}
+}
+
+// 4 CollectionView Cell
+class SelectCustomUICollectionViewCell : UICollectionViewCell{
+	var textLabel : UILabel?
+	
+	required init(coder aDecoder: NSCoder) {
+		super.init(coder: aDecoder)!
+	}
+	
+	override init(frame: CGRect) {
+		super.init(frame: frame)
+		
+		textLabel = UILabel(frame: CGRect(x:0, y:0, width:frame.width, height:frame.height))
+		textLabel?.text = "nil"
+		textLabel?.numberOfLines = 2
+		textLabel?.baselineAdjustment = .none
+		textLabel?.lineBreakMode = .byTruncatingTail
+		textLabel?.textAlignment = NSTextAlignment.center
+		textLabel?.adjustsFontSizeToFitWidth = true
+		self.contentView.addSubview(textLabel!)
+	}
+}
+

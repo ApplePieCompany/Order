@@ -13,6 +13,7 @@ class ShareController: NSObject {
 	enum EnumTitle : String{
 		case Order = "注文画面"
 		case History = "注文履歴画面"
+		case Select = "商品注文画面"
 		case Conf = "設定画面"
 	}
 	
@@ -21,6 +22,7 @@ class ShareController: NSObject {
 		switch(_tag){
 		case 1:return EnumTitle.Order.rawValue
 		case 11:return EnumTitle.History.rawValue
+		case 12:return EnumTitle.Select.rawValue
 		case 2:return EnumTitle.Conf.rawValue
 		default: return EnumTitle.Conf.rawValue
 		}
