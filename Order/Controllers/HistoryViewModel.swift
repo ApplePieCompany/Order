@@ -18,6 +18,12 @@ class HistoryViewModel: NSObject, UITableViewDelegate, UITableViewDataSource{
 	var CONST_SIZE : CGRect!
 	var CONST_SECTION = "ご注文商品"
 	
+	var CONST_LABEL : [String:String] = [
+		"Count":"ご注文数量",
+		"Tanka":"ご注文商品単価",
+		"Kingaku":"ご注文商品金額",
+	]
+	
 	var myTableView : UITableView!
 	
 	init(_size:CGRect) {
@@ -47,29 +53,12 @@ class HistoryViewModel: NSObject, UITableViewDelegate, UITableViewDataSource{
 		let cell = tableView.dequeueReusableCell(withIdentifier: NSStringFromClass(OrderItem.self), for: indexPath) as! OrderItem
 		cell.Name.text = self.DataSources[indexPath.row].Name
 		
-		var num = NSNumber(value: self.DataSources[indexPath.row].Count)
-		var formatter = NumberFormatter()
-		formatter.numberStyle = NumberFormatter.Style.decimal
-		formatter.groupingSeparator = ","
-		formatter.groupingSize = 3
-		cell.Count.text = "ご注文数量\n\(formatter.string(from: num)!)"
-
-		num = NSNumber(value: self.DataSources[indexPath.row].Tanka)
-		formatter = NumberFormatter()
-		formatter.numberStyle = NumberFormatter.Style.decimal
-		formatter.groupingSeparator = ","
-		formatter.groupingSize = 3
-		cell.Tanka.text = "ご注文商品単価\n@\(formatter.string(from: num)!)"
+		cell.Count.text = "\(CONST_LABEL["Count"]!)\n\(self.makeCell(_val: self.DataSources[indexPath.row].Count))"
+		cell.Tanka.text = "\(CONST_LABEL["Tanka"]!)\n\(self.makeCell(_val: self.DataSources[indexPath.row].Tanka))"
 
 		let _sum = self.DataSources[indexPath.row].Count * self.DataSources[indexPath.row].Tanka
-		num = NSNumber(value: _sum)
-		formatter = NumberFormatter()
-		formatter.numberStyle = NumberFormatter.Style.decimal
-		formatter.groupingSeparator = ","
-		formatter.groupingSize = 3
-		cell.Kingaku.text = "ご注文商品金額\n¥\(formatter.string(from: num)!)"
-		
-		
+		cell.Kingaku.text = "\(CONST_LABEL["Kingaku"]!)\n\(self.makeCell(_val: _sum))"
+
 		return cell
 	}
 	
@@ -79,6 +68,16 @@ class HistoryViewModel: NSObject, UITableViewDelegate, UITableViewDataSource{
 	
 	func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
 	}
+	
+	//4 Cell
+	func makeCell(_val : Int) -> String{
+		let num = NSNumber(value: _val)
+		let formatter = NumberFormatter()
+		formatter.numberStyle = NumberFormatter.Style.decimal
+		formatter.groupingSeparator = ","
+		formatter.groupingSize = 3
+		return formatter.string(from: num)!
+	}
 }
 
 class OrderItem: UITableViewCell {
@@ -87,41 +86,48 @@ class OrderItem: UITableViewCell {
 	var Tanka: UILabel!
 	var Kingaku: UILabel!
 	
+	var CONST_LABEL_NAME_FONT = UIFont(name: "Arial", size: 18)
+	var CONST_LABEL_FONT = UIFont(name: "Arial", size: 14)
+	
+	var CONST_LABEL_CGRECT : [String : CGRect] = [
+		"Count" : CGRect(x: 50, y: 30, width: 150, height: 25),
+		"Tanka" : CGRect(x: 150, y: 30, width: 150, height: 25),
+		"Kingaku" : CGRect(x: 250, y: 30, width: 150, height: 25),
+	]
+	
 	override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
 		super.init(style: style, reuseIdentifier: reuseIdentifier)
 		
-		Name = UILabel(frame: CGRect.zero)
-		Name.textAlignment = .left
-		Name.font = UIFont(name: "Arial", size: 18)
-		Name.adjustsFontSizeToFitWidth = true
+		Name = makeLabel(_font: CONST_LABEL_NAME_FONT!)
 		contentView.addSubview(Name)
 
-		Count = UILabel(frame: CGRect.zero)
-		Count.textAlignment = .left
-		Count.font = UIFont(name: "Arial", size: 14)
-		Count.numberOfLines = 2
-		Count.baselineAdjustment = .none
-		Count.lineBreakMode = .byTruncatingTail
-		Count.adjustsFontSizeToFitWidth = true
+		Count = makeLabel(_rect : CONST_LABEL_CGRECT["Count"]!)
 		contentView.addSubview(Count)
 
-		Tanka = UILabel(frame: CGRect.zero)
-		Tanka.textAlignment = .left
-		Tanka.font = UIFont(name: "Arial", size: 14)
-		Tanka.numberOfLines = 2
-		Tanka.baselineAdjustment = .none
-		Tanka.lineBreakMode = .byTruncatingTail
-		Tanka.adjustsFontSizeToFitWidth = true
+		Tanka = makeLabel(_rect : CONST_LABEL_CGRECT["Tanka"]!)
 		contentView.addSubview(Tanka)
 
-		Kingaku = UILabel(frame: CGRect.zero)
-		Kingaku.textAlignment = .left
-		Kingaku.font = UIFont(name: "Arial", size: 14)
-		Kingaku.numberOfLines = 2
-		Kingaku.baselineAdjustment = .none
-		Kingaku.lineBreakMode = .byTruncatingTail
-		Kingaku.adjustsFontSizeToFitWidth = true
+		Kingaku = makeLabel(_rect : CONST_LABEL_CGRECT["Kingaku"]!)
 		contentView.addSubview(Kingaku)
+	}
+	
+	func makeLabel(_font : UIFont) -> UILabel{
+		let _return : UILabel = UILabel(frame: CGRect.zero)
+		_return.textAlignment = .left
+		_return.font = _font
+		_return.adjustsFontSizeToFitWidth = true
+		return _return
+	}
+
+	func makeLabel(_rect: CGRect) -> UILabel{
+		let _return : UILabel = UILabel(frame: _rect)
+		_return.textAlignment = .center
+		_return.font = CONST_LABEL_FONT
+		_return.numberOfLines = 2
+		_return.baselineAdjustment = .none
+		_return.lineBreakMode = .byTruncatingTail
+		_return.adjustsFontSizeToFitWidth = true
+		return _return
 	}
 	
 	required init(coder aDecoder: NSCoder) {
@@ -134,10 +140,13 @@ class OrderItem: UITableViewCell {
 	
 	override func layoutSubviews() {
 		super.layoutSubviews()
+
 		Name.frame = CGRect(x: 8, y: 5, width: frame.width - 100, height: 25)
-		Count.frame = CGRect(x: 50, y: 30, width: 150, height: 25)
-		Tanka.frame = CGRect(x: 150, y: 30, width: 150, height: 25)
-		Kingaku.frame = CGRect(x: 250, y: 30, width: 150, height: 25)
+		/*
+		Count.frame = CONST_LABEL_CGRECT["Count"]!
+		Tanka.frame = CONST_LABEL_CGRECT["Tanka"]!
+		Kingaku.frame = CONST_LABEL_CGRECT["Kingaku"]!
+		*/
 	}
 	
 }

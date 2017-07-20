@@ -262,7 +262,6 @@ class OrderViewController: UIViewController, UICollectionViewDataSource, UIColle
 					let attrText = NSMutableAttributedString(string: "\(_day)\n注文済")
 					let _beg = _day < 10 ? 1 : 2
 					attrText.addAttributes([NSFontAttributeName: UIFont.boldSystemFont(ofSize: 24.0)], range: NSMakeRange(0, _beg))
-					attrText.addAttribute(NSForegroundColorAttributeName,value: UIColor.red,range: NSMakeRange(_beg, 4))
 					attrText.addAttributes([NSFontAttributeName: UIFont.systemFont(ofSize: 20)], range: NSMakeRange(_beg, 4))
 					cell.textLabel?.attributedText = attrText
 					cell.isUserInteractionEnabled = true
