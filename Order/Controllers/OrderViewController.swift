@@ -33,6 +33,7 @@ class OrderViewController: UIViewController, UICollectionViewDataSource, UIColle
 	
 	var _CellItems: [Date] = []
 	var _EventList : [Date] = []
+	var _IsIng : Bool = false
 	
 	enum DayColor{
 		case Sun
@@ -54,6 +55,7 @@ class OrderViewController: UIViewController, UICollectionViewDataSource, UIColle
 
 		self.title = shareController.getEnumTitle(_tag: CONST_TAG)
 		self.tabBarItem = UITabBarItem(tabBarSystemItem: UITabBarSystemItem.favorites, tag: CONST_TAG)
+		self.tabBarItem.badgeColor = UIColor.red
 	}
 
 	required init?(coder aDecoder: NSCoder) {
@@ -78,6 +80,10 @@ class OrderViewController: UIViewController, UICollectionViewDataSource, UIColle
 		self.makeCellItems()
 		
 		self.myCollectionView = self.getCollectionView()
+		if(self._EventList.count>0 ){
+			self.tabBarItem.badgeValue = "!"
+		}
+		
 		self.view.addSubview(myCollectionView)
 	}
 	
@@ -259,10 +265,17 @@ class OrderViewController: UIViewController, UICollectionViewDataSource, UIColle
 				
 				//イベントがあれば「注文済」表示
 				if(self.IsEvent(_date: self._CellItems[indexPath.row])){
-					let attrText = NSMutableAttributedString(string: "\(_day)\n注文済")
+					var _IsLast : Bool = false
+					if(!_IsPast){ _IsLast = self._EventList[self._EventList.count - 1] == self._CellItems[indexPath.row] ? true: false }
+					
+					let attrText = _IsLast ? NSMutableAttributedString(string: "\(_day)\n注文中"): NSMutableAttributedString(string: "\(_day)\n注文済")
 					let _beg = _day < 10 ? 1 : 2
 					attrText.addAttributes([NSFontAttributeName: UIFont.boldSystemFont(ofSize: 24.0)], range: NSMakeRange(0, _beg))
 					attrText.addAttributes([NSFontAttributeName: UIFont.systemFont(ofSize: 20)], range: NSMakeRange(_beg, 4))
+					if(_IsLast){
+						attrText.addAttributes([NSForegroundColorAttributeName: UIColor.red], range: NSMakeRange(_beg, 4))
+					}
+					
 					cell.textLabel?.attributedText = attrText
 					cell.isUserInteractionEnabled = true
 					cell.tag = _IsPast ? 0 : 1//過去注文は０、未来注文は１
@@ -287,7 +300,7 @@ class OrderViewController: UIViewController, UICollectionViewDataSource, UIColle
 
 		let appDelegate:AppDelegate = UIApplication.shared.delegate as! AppDelegate
 		appDelegate.targetDate = self._CellItems[indexPath.row]
-		appDelegate.eventList = self._EventList.sorted(by: {$0.0 < $0.1})
+		appDelegate.eventList = self._EventList
 		
 		switch(Int((collectionView.cellForItem(at: indexPath)?.tag)!)){
 		case 0:

@@ -16,12 +16,9 @@ class MainTabBarController: UITabBarController {
 		// Do any additional setup after loading the view.
 		
 		var uIViewController : [UIViewController] = [OrderViewController(),ConfViewController()]		
-		uIViewController[0].tabBarItem = UITabBarItem(title: "Order", image: UIImage(named:"list.png"), tag: 1)
-		uIViewController[1].tabBarItem = UITabBarItem(title: "Config", image: UIImage(named:"conf.png"), tag: 2)
-		
-		uIViewController[0].tabBarItem.badgeColor = UIColor.red
-		uIViewController[0].tabBarItem.badgeValue = "!"
-		
+		uIViewController[0].tabBarItem = UITabBarItem(title: "商品注文", image: UIImage(named:"list.png"), tag: 1)
+		uIViewController[1].tabBarItem = UITabBarItem(title: "利用者設定", image: UIImage(named:"conf.png"), tag: 2)
+				
 		var navigationControllers : [UINavigationController] = []
 		for value in uIViewController{
 			navigationControllers.append(UINavigationController(rootViewController: value))
