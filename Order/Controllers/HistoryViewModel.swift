@@ -55,11 +55,11 @@ class HistoryViewModel: NSObject, UITableViewDelegate, UITableViewDataSource{
 		let cell = tableView.dequeueReusableCell(withIdentifier: NSStringFromClass(OrderItem.self), for: indexPath) as! OrderItem
 		cell.Name.text = self.DataSources[indexPath.row].Name
 		
-		cell.Count.text = "\(CONST_LABEL["Count"]!)\n\(self.makeCell(_val: self.DataSources[indexPath.row].Count))"
-		cell.Tanka.text = "\(CONST_LABEL["Tanka"]!)\n\(self.makeCell(_val: self.DataSources[indexPath.row].Tanka))"
+		cell.Count.text = "\(CONST_LABEL["Count"]!)\n\(shareController.convNum2str(_val: self.DataSources[indexPath.row].Count))"
+		cell.Tanka.text = "\(CONST_LABEL["Tanka"]!)\n\(shareController.convNum2str(_val: self.DataSources[indexPath.row].Tanka))"
 
 		let _sum = self.DataSources[indexPath.row].Count * self.DataSources[indexPath.row].Tanka
-		cell.Kingaku.text = "\(CONST_LABEL["Kingaku"]!)\n\(self.makeCell(_val: _sum))"
+		cell.Kingaku.text = "\(CONST_LABEL["Kingaku"]!)\n\(shareController.convNum2str(_val: _sum))"
 
 		return cell
 	}
@@ -69,16 +69,6 @@ class HistoryViewModel: NSObject, UITableViewDelegate, UITableViewDataSource{
 	}
 	
 	func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-	}
-	
-	//4 Cell
-	func makeCell(_val : Int) -> String{
-		let num = NSNumber(value: _val)
-		let formatter = NumberFormatter()
-		formatter.numberStyle = NumberFormatter.Style.decimal
-		formatter.groupingSeparator = ","
-		formatter.groupingSize = 3
-		return formatter.string(from: num)!
 	}
 }
 

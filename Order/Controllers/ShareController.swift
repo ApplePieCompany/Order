@@ -164,4 +164,14 @@ class ShareController: NSObject {
 		return _return
 	}
 
+	//数値をカンマ編集
+	func convNum2str(_val : Int) -> String{
+		let num = NSNumber(value: _val)
+		let formatter = NumberFormatter()
+		formatter.numberStyle = NumberFormatter.Style.decimal
+		formatter.groupingSeparator = ","
+		formatter.groupingSize = 3
+		return formatter.string(from: num)!
+	}
+	
 }

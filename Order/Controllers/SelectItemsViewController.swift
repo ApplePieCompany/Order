@@ -23,19 +23,24 @@ class SelectItemsViewController: UIViewController, UICollectionViewDataSource, U
 	var CONST_TAGS : [String:Int] = ["Select":100, "List":200]
 
 	var _Layout_itemSize : CGSize!
-	var _Layout_headerReferenceSize = CGSize(width:0,height:10)
+	var _Layout_headerReferenceSize = CGSize(width:0,height:8)
 	var _Layout_sectionInset = UIEdgeInsetsMake(4, 4, 4, 4)
 	
 	var _Collection_Frame : CGRect!
 	var _Collection_HeaderSize : CGSize!
 
 	var _CellItems: [Date] = []
+	var _EventList : [Date] = []
+	var _ItemList : [ItemModel] = []
 	
 	
 	init() {
 		super.init(nibName: nil, bundle: nil)
 		
 		self.title = shareController.getEnumTitle(_tag: CONST_TAG)
+		
+		let _ItemModels : ItemModels = ItemModels()
+		self._ItemList = _ItemModels.makeList()
 	}
 	
 	required init?(coder aDecoder: NSCoder) {
@@ -53,10 +58,11 @@ class SelectItemsViewController: UIViewController, UICollectionViewDataSource, U
 		
 		let appDelegate:AppDelegate = UIApplication.shared.delegate as! AppDelegate
 		self.myCalender = appDelegate.targetDate
+		self._EventList = appDelegate.eventList
 
 		self.CONST_FRAMESIZE = CGSize(width: self.view.frame.width, height: self.view.frame.height)
 		
-		self._Layout_itemSize = CGSize(width:CONST_FRAMESIZE.width / 9, height:CONST_FRAMESIZE.height / 11)
+		self._Layout_itemSize = CGSize(width:CONST_FRAMESIZE.width, height:CONST_FRAMESIZE.height / 11)
 		self._Collection_Frame = CGRect(x: 0, y: 0, width: CONST_FRAMESIZE.width, height:CONST_FRAMESIZE.height - 49)
 		self._Collection_HeaderSize = CGSize(width: CONST_FRAMESIZE.width, height: 40)
 		
@@ -76,7 +82,7 @@ class SelectItemsViewController: UIViewController, UICollectionViewDataSource, U
 		let _Layout : UICollectionViewFlowLayout = UICollectionViewFlowLayout()
 		_Layout.itemSize = _Layout_itemSize
 		//		_Layout.headerReferenceSize = _Layout_headerReferenceSize
-		_Layout.sectionInset = _Layout_sectionInset
+		//		_Layout.sectionInset = _Layout_sectionInset
 		
 		// CollectionViewを生成.
 		_return = UICollectionView(frame: _Collection_Frame, collectionViewLayout: _Layout)
@@ -146,9 +152,17 @@ class SelectItemsViewController: UIViewController, UICollectionViewDataSource, U
 	//ヘッダセクションを返す
 	func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView
 	{
+		var _idx = 0
+		for i in 0..<self._EventList.count{
+			if(self._EventList[i] == self.myCalender){
+				_idx = 1
+				break
+			}
+		}
+		
 		let headerView = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionElementKindSectionHeader, withReuseIdentifier: CONST_ReuseIdent, for: indexPath) as! SelectCollectionReusableView
 		headerView.backgroundColor = UIColor.lightGray
-		headerView.mySegcon?.selectedSegmentIndex = 0
+		headerView.mySegcon?.selectedSegmentIndex = _idx
 		headerView.mySegcon?.addTarget(self, action: #selector(self.segconChanged(segcon:)), for: UIControlEvents.valueChanged)
 		return headerView
 	}
@@ -174,7 +188,7 @@ class SelectItemsViewController: UIViewController, UICollectionViewDataSource, U
 	func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
 		switch(section){
 		case 0:return 1
-		case 1:return self._CellItems.count
+		case 1:return self._ItemList.count
 		default:
 			print("error")
 			return 0
@@ -190,10 +204,14 @@ class SelectItemsViewController: UIViewController, UICollectionViewDataSource, U
 		switch(indexPath.section){
 		case 0 , 1:
 			if(indexPath.section == 0){
-				cell.textLabel?.text = "HEADERS"
+				cell.name?.text = "　　　【商品一覧】"
+				cell.tanka?.text = nil
 			}
 			else{
-				cell.textLabel?.text = "ITEMS"
+				cell.imageView.image = self._ItemList[indexPath.row].photo
+				cell.name?.text = self._ItemList[indexPath.row].name
+				cell.tanka?.text = "@"+shareController.convNum2str(_val: self._ItemList[indexPath.row].tanka)
+				cell.isUserInteractionEnabled = true
 			}
 			
 		default:
@@ -205,6 +223,7 @@ class SelectItemsViewController: UIViewController, UICollectionViewDataSource, U
 	
 	//セルクリック時の処理
 	func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+		print(self._ItemList[indexPath.row])
 	}
 }
 
@@ -235,7 +254,9 @@ class SelectCollectionReusableView: UICollectionReusableView {
 
 // 4 CollectionView Cell
 class SelectCustomUICollectionViewCell : UICollectionViewCell{
-	var textLabel : UILabel?
+	var imageView : UIImageView!
+	var name : UILabel?
+	var tanka : UILabel?
 	
 	required init(coder aDecoder: NSCoder) {
 		super.init(coder: aDecoder)!
@@ -244,14 +265,24 @@ class SelectCustomUICollectionViewCell : UICollectionViewCell{
 	override init(frame: CGRect) {
 		super.init(frame: frame)
 		
-		textLabel = UILabel(frame: CGRect(x:0, y:0, width:frame.width, height:frame.height))
-		textLabel?.text = "nil"
-		textLabel?.numberOfLines = 2
-		textLabel?.baselineAdjustment = .none
-		textLabel?.lineBreakMode = .byTruncatingTail
-		textLabel?.textAlignment = NSTextAlignment.center
-		textLabel?.adjustsFontSizeToFitWidth = true
-		self.contentView.addSubview(textLabel!)
+		imageView = UIImageView(frame: CGRect(x: 8, y: 0, width: 48, height: 48))
+		self.contentView.addSubview(imageView)
+		
+		name = UILabel(frame: CGRect(x:64, y:0, width:300, height:frame.height))
+		name?.text = "nil"
+		name?.baselineAdjustment = .none
+		name?.lineBreakMode = .byTruncatingTail
+		name?.textAlignment = NSTextAlignment.left
+		name?.adjustsFontSizeToFitWidth = true
+		self.contentView.addSubview(name!)
+
+		tanka = UILabel(frame: CGRect(x:frame.width-65, y:0, width:55, height:frame.height))
+		tanka?.text = "nil"
+		tanka?.baselineAdjustment = .none
+		tanka?.lineBreakMode = .byTruncatingTail
+		tanka?.textAlignment = NSTextAlignment.right
+		tanka?.adjustsFontSizeToFitWidth = true
+		self.contentView.addSubview(tanka!)
 	}
 }
 

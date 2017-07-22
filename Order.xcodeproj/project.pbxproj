@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0A0F0B0D1F22D5CC00C519C1 /* ItemModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A0F0B0C1F22D5CC00C519C1 /* ItemModel.swift */; };
 		0A125E7E1F18B88100B9E34E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A125E7D1F18B88100B9E34E /* AppDelegate.swift */; };
 		0A125E801F18B88100B9E34E /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A125E7F1F18B88100B9E34E /* ViewController.swift */; };
 		0A125E831F18B88100B9E34E /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0A125E811F18B88100B9E34E /* Main.storyboard */; };
@@ -20,6 +21,19 @@
 		0A125EB91F18BCB100B9E34E /* conf.png in Resources */ = {isa = PBXBuildFile; fileRef = 0A125EB71F18BCB100B9E34E /* conf.png */; };
 		0A125EBC1F18BEDA00B9E34E /* ShareController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A125EBB1F18BEDA00B9E34E /* ShareController.swift */; };
 		0A4DF9CF1F1AE382002B5297 /* OrderViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A4DF9CE1F1AE382002B5297 /* OrderViewModel.swift */; };
+		0A7040B31F22D26B003BCDA6 /* うな重.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 0A7040A61F22D26B003BCDA6 /* うな重.jpg */; };
+		0A7040B41F22D26B003BCDA6 /* おにぎり.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 0A7040A71F22D26B003BCDA6 /* おにぎり.jpg */; };
+		0A7040B51F22D26B003BCDA6 /* オムライス.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 0A7040A81F22D26B003BCDA6 /* オムライス.jpg */; };
+		0A7040B61F22D26B003BCDA6 /* かつ丼.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 0A7040A91F22D26B003BCDA6 /* かつ丼.jpg */; };
+		0A7040B71F22D26B003BCDA6 /* から揚げ定食.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 0A7040AA1F22D26B003BCDA6 /* から揚げ定食.jpg */; };
+		0A7040B81F22D26B003BCDA6 /* カレーライス.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 0A7040AB1F22D26B003BCDA6 /* カレーライス.jpg */; };
+		0A7040B91F22D26B003BCDA6 /* ハヤシライス.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 0A7040AC1F22D26B003BCDA6 /* ハヤシライス.jpg */; };
+		0A7040BA1F22D26B003BCDA6 /* 海鮮丼.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 0A7040AD1F22D26B003BCDA6 /* 海鮮丼.jpg */; };
+		0A7040BB1F22D26B003BCDA6 /* 鮭の定食.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 0A7040AE1F22D26B003BCDA6 /* 鮭の定食.jpg */; };
+		0A7040BC1F22D26B003BCDA6 /* 焼肉定食.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 0A7040AF1F22D26B003BCDA6 /* 焼肉定食.jpg */; };
+		0A7040BD1F22D26B003BCDA6 /* 親子丼.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 0A7040B01F22D26B003BCDA6 /* 親子丼.jpg */; };
+		0A7040BE1F22D26B003BCDA6 /* 生姜焼き定食.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 0A7040B11F22D26B003BCDA6 /* 生姜焼き定食.jpg */; };
+		0A7040BF1F22D26B003BCDA6 /* 天丼.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 0A7040B21F22D26B003BCDA6 /* 天丼.jpg */; };
 		0A7DD0F31F1EFCD100438247 /* SelectItemsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A7DD0F21F1EFCD100438247 /* SelectItemsViewController.swift */; };
 		0AE7F8A01F1F3082009453E3 /* OrderModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AE7F89F1F1F3082009453E3 /* OrderModel.swift */; };
 		0AE7F8A21F1F4084009453E3 /* HistoryViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AE7F8A11F1F4084009453E3 /* HistoryViewModel.swift */; };
@@ -45,6 +59,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		0A0F0B0C1F22D5CC00C519C1 /* ItemModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ItemModel.swift; sourceTree = "<group>"; };
 		0A125E7A1F18B88100B9E34E /* Order.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Order.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0A125E7D1F18B88100B9E34E /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		0A125E7F1F18B88100B9E34E /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -64,6 +79,19 @@
 		0A125EB71F18BCB100B9E34E /* conf.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = conf.png; sourceTree = "<group>"; };
 		0A125EBB1F18BEDA00B9E34E /* ShareController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShareController.swift; sourceTree = "<group>"; };
 		0A4DF9CE1F1AE382002B5297 /* OrderViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OrderViewModel.swift; sourceTree = "<group>"; };
+		0A7040A61F22D26B003BCDA6 /* うな重.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "うな重.jpg"; sourceTree = "<group>"; };
+		0A7040A71F22D26B003BCDA6 /* おにぎり.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "おにぎり.jpg"; sourceTree = "<group>"; };
+		0A7040A81F22D26B003BCDA6 /* オムライス.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "オムライス.jpg"; sourceTree = "<group>"; };
+		0A7040A91F22D26B003BCDA6 /* かつ丼.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "かつ丼.jpg"; sourceTree = "<group>"; };
+		0A7040AA1F22D26B003BCDA6 /* から揚げ定食.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "から揚げ定食.jpg"; sourceTree = "<group>"; };
+		0A7040AB1F22D26B003BCDA6 /* カレーライス.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "カレーライス.jpg"; sourceTree = "<group>"; };
+		0A7040AC1F22D26B003BCDA6 /* ハヤシライス.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "ハヤシライス.jpg"; sourceTree = "<group>"; };
+		0A7040AD1F22D26B003BCDA6 /* 海鮮丼.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "海鮮丼.jpg"; sourceTree = "<group>"; };
+		0A7040AE1F22D26B003BCDA6 /* 鮭の定食.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "鮭の定食.jpg"; sourceTree = "<group>"; };
+		0A7040AF1F22D26B003BCDA6 /* 焼肉定食.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "焼肉定食.jpg"; sourceTree = "<group>"; };
+		0A7040B01F22D26B003BCDA6 /* 親子丼.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "親子丼.jpg"; sourceTree = "<group>"; };
+		0A7040B11F22D26B003BCDA6 /* 生姜焼き定食.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "生姜焼き定食.jpg"; sourceTree = "<group>"; };
+		0A7040B21F22D26B003BCDA6 /* 天丼.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "天丼.jpg"; sourceTree = "<group>"; };
 		0A7DD0F21F1EFCD100438247 /* SelectItemsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SelectItemsViewController.swift; sourceTree = "<group>"; };
 		0AE7F89F1F1F3082009453E3 /* OrderModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OrderModel.swift; sourceTree = "<group>"; };
 		0AE7F8A11F1F4084009453E3 /* HistoryViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HistoryViewModel.swift; sourceTree = "<group>"; };
@@ -155,6 +183,7 @@
 			isa = PBXGroup;
 			children = (
 				0AE7F89F1F1F3082009453E3 /* OrderModel.swift */,
+				0A0F0B0C1F22D5CC00C519C1 /* ItemModel.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -184,10 +213,31 @@
 		0A125EB01F18BA0F00B9E34E /* Assets */ = {
 			isa = PBXGroup;
 			children = (
+				0A7040A51F22D1A6003BCDA6 /* DemoImages */,
 				0AF13DD81F1DDCEE005D5C65 /* list.png */,
 				0A125EB71F18BCB100B9E34E /* conf.png */,
 			);
 			path = Assets;
+			sourceTree = "<group>";
+		};
+		0A7040A51F22D1A6003BCDA6 /* DemoImages */ = {
+			isa = PBXGroup;
+			children = (
+				0A7040A61F22D26B003BCDA6 /* うな重.jpg */,
+				0A7040A71F22D26B003BCDA6 /* おにぎり.jpg */,
+				0A7040A81F22D26B003BCDA6 /* オムライス.jpg */,
+				0A7040A91F22D26B003BCDA6 /* かつ丼.jpg */,
+				0A7040AA1F22D26B003BCDA6 /* から揚げ定食.jpg */,
+				0A7040AB1F22D26B003BCDA6 /* カレーライス.jpg */,
+				0A7040AC1F22D26B003BCDA6 /* ハヤシライス.jpg */,
+				0A7040AD1F22D26B003BCDA6 /* 海鮮丼.jpg */,
+				0A7040AE1F22D26B003BCDA6 /* 鮭の定食.jpg */,
+				0A7040AF1F22D26B003BCDA6 /* 焼肉定食.jpg */,
+				0A7040B01F22D26B003BCDA6 /* 親子丼.jpg */,
+				0A7040B11F22D26B003BCDA6 /* 生姜焼き定食.jpg */,
+				0A7040B21F22D26B003BCDA6 /* 天丼.jpg */,
+			);
+			path = DemoImages;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -300,11 +350,24 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0A7040B81F22D26B003BCDA6 /* カレーライス.jpg in Resources */,
+				0A7040B91F22D26B003BCDA6 /* ハヤシライス.jpg in Resources */,
+				0A7040B51F22D26B003BCDA6 /* オムライス.jpg in Resources */,
+				0A7040B71F22D26B003BCDA6 /* から揚げ定食.jpg in Resources */,
+				0A7040BE1F22D26B003BCDA6 /* 生姜焼き定食.jpg in Resources */,
+				0A7040B41F22D26B003BCDA6 /* おにぎり.jpg in Resources */,
+				0A7040BB1F22D26B003BCDA6 /* 鮭の定食.jpg in Resources */,
 				0A125E881F18B88100B9E34E /* LaunchScreen.storyboard in Resources */,
+				0A7040BA1F22D26B003BCDA6 /* 海鮮丼.jpg in Resources */,
 				0AF13DD91F1DDCEE005D5C65 /* list.png in Resources */,
+				0A7040BF1F22D26B003BCDA6 /* 天丼.jpg in Resources */,
 				0A125EB91F18BCB100B9E34E /* conf.png in Resources */,
+				0A7040B31F22D26B003BCDA6 /* うな重.jpg in Resources */,
+				0A7040B61F22D26B003BCDA6 /* かつ丼.jpg in Resources */,
+				0A7040BD1F22D26B003BCDA6 /* 親子丼.jpg in Resources */,
 				0A125E851F18B88100B9E34E /* Assets.xcassets in Resources */,
 				0A125E831F18B88100B9E34E /* Main.storyboard in Resources */,
+				0A7040BC1F22D26B003BCDA6 /* 焼肉定食.jpg in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -335,6 +398,7 @@
 				0AE7F8A01F1F3082009453E3 /* OrderModel.swift in Sources */,
 				0A125E7E1F18B88100B9E34E /* AppDelegate.swift in Sources */,
 				0A125EBC1F18BEDA00B9E34E /* ShareController.swift in Sources */,
+				0A0F0B0D1F22D5CC00C519C1 /* ItemModel.swift in Sources */,
 				0A125EAF1F18B9FB00B9E34E /* MainTabBarController.swift in Sources */,
 				0A4DF9CF1F1AE382002B5297 /* OrderViewModel.swift in Sources */,
 				0A125EB21F18BAB200B9E34E /* OrderViewController.swift in Sources */,
