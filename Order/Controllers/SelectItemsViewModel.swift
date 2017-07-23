@@ -15,28 +15,39 @@ class SelectItemsViewModel: NSObject {
 	var CONST_FRAMESIZE : CGSize!
 	var CONST_NAVIGATIONBAR_HEIGHT : CGFloat!
 	var CONST_STATUSBAR_HEIGHT : CGFloat!
+	var CONST_BG : UIColor!
 
-	var CONST_HEADER_TITLE = "商品一覧"
-	var CONST_HEADER_PNG = "cart.png"
+	var CONST_HEADER_TITLE = "商品選択"
+	var CONST_HEADER_SEARCHPNG = "search.png"
+	var CONST_HEADER_CARTPNG = "cart.png"
 	var CONST_SEGCON : NSArray = ["丼","定食", "洋食","一品料理"]
 	var CONST_ATTRFORECOLOR = [ NSForegroundColorAttributeName: UIColor.blue ]
-
 	
-	var CONST_VIEWS_HEIGHT : [String:CGFloat] = ["Header":100, "Body":0,"Footer":1]
+	var CONST_VIEWS_HEIGHT : [String:CGFloat] = ["Header":64, "Body":0,"Footer":1]
+
+	public var search_btn : UIButton!
+	public var cart_btn : UIButton!
+	public var segcon : UISegmentedControl!
+	public var segconIdx: Int!
+	
+	public var myPagecontrol : UIPageControl!
+	public var myScrollView : UIScrollView!
 	
 	override init() {
 	}
 
-	init(_size:CGSize, _navHeight:CGFloat, _staHeight:CGFloat){
+	init(_size:CGSize, _navHeight:CGFloat, _staHeight:CGFloat, _segcon: Int){
 		self.CONST_FRAMESIZE = _size
 		self.CONST_NAVIGATIONBAR_HEIGHT = _navHeight + 20
 		self.CONST_STATUSBAR_HEIGHT = _staHeight + 30
 		self.CONST_VIEWS_HEIGHT["Body"] = CONST_FRAMESIZE.height - self.CONST_NAVIGATIONBAR_HEIGHT - self.CONST_STATUSBAR_HEIGHT - self.CONST_VIEWS_HEIGHT["Header"]! - self.CONST_VIEWS_HEIGHT["Footer"]!
+		self.CONST_BG = shareController.convHex2Color(_hexStr: "F5ECCE", _alpha:1)
+		self.segconIdx = _segcon
 	}
 	
 	func getHeaderView() -> UIView{
 		let _return : UIView = UIView(frame: CGRect(x: 0, y: self.CONST_NAVIGATIONBAR_HEIGHT, width: self.CONST_FRAMESIZE.width, height: CONST_VIEWS_HEIGHT["Header"]!))
-		_return.backgroundColor = shareController.convHex2Color(_hexStr: "F5ECCE", _alpha:1)
+		_return.backgroundColor = self.CONST_BG
 		
 		let _title : UILabel = UILabel(frame: CGRect(x: 0, y: 8, width: CONST_FRAMESIZE.width, height: 0))
 		_title.text = CONST_HEADER_TITLE
@@ -44,26 +55,72 @@ class SelectItemsViewModel: NSObject {
 		_title.frame.origin.x = CONST_FRAMESIZE.width/2 - _title.frame.size.width/2
 		_return.addSubview(_title)
 		
-		let _cart : UIButton = UIButton(frame: CGRect(x: CONST_FRAMESIZE.width - 32 - 8, y: _title.frame.size.height + 8, width: 32, height: 32))
-		let _cartImage : UIImage = UIImage(named: CONST_HEADER_PNG)!
-		_cart.setImage(_cartImage, for: .normal)
-		_return.addSubview(_cart)
+		self.search_btn = UIButton(frame: CGRect(x: CONST_FRAMESIZE.width - 16 - 16 - 16, y: 8, width: 16, height: 16))
+		self.search_btn.tag = 1
+		let _searchImage : UIImage = UIImage(named: CONST_HEADER_SEARCHPNG)!
+		self.search_btn.setImage(_searchImage, for: .normal)
+		_return.addSubview(self.search_btn)
 
-		let _segcon : UISegmentedControl = UISegmentedControl(items: CONST_SEGCON as [AnyObject])
-		_segcon.setTitleTextAttributes(CONST_ATTRFORECOLOR, for: UIControlState.selected)
-		_segcon.center = CGPoint(x: self.CONST_FRAMESIZE.width/2, y: _cart.frame.origin.y + _cart.frame.size.height + 20)
-		_segcon.backgroundColor = UIColor.blue
-		_segcon.tintColor = UIColor.white
-		_segcon.layer.cornerRadius = 5
-		_segcon.selectedSegmentIndex = 0
-		_return.addSubview(_segcon)
+		self.cart_btn = UIButton(frame: CGRect(x: CONST_FRAMESIZE.width - 16 - 8, y: 8, width: 16, height: 16))
+		self.cart_btn.tag = 2
+		let _cartImage : UIImage = UIImage(named: CONST_HEADER_CARTPNG)!
+		self.cart_btn.setImage(_cartImage, for: .normal)
+		_return.addSubview(self.cart_btn)
+
+		self.segcon = UISegmentedControl(items: CONST_SEGCON as [AnyObject])
+		self.segcon.setTitleTextAttributes(CONST_ATTRFORECOLOR, for: UIControlState.selected)
+		self.segcon.center = CGPoint(x: self.CONST_FRAMESIZE.width/2, y: self.cart_btn.frame.origin.y + self.cart_btn.frame.size.height + 24)
+		self.segcon.backgroundColor = UIColor.blue
+		self.segcon.tintColor = UIColor.white
+		self.segcon.layer.cornerRadius = 5
+		self.segcon.selectedSegmentIndex = self.segconIdx
+		_return.addSubview(self.segcon)
 		
 		return _return
 	}
 	
 	func getBodyView() -> UIView{
 		let _return : UIView = UIView(frame: CGRect(x: 0, y: self.CONST_NAVIGATIONBAR_HEIGHT + CONST_VIEWS_HEIGHT["Header"]!, width: self.CONST_FRAMESIZE.width, height: CONST_VIEWS_HEIGHT["Body"]!))
-		_return.backgroundColor = UIColor.orange
+		_return.backgroundColor = UIColor.white
+
+		// ビューの縦、横のサイズを取得する.
+		let width = _return.frame.maxX
+		let height = _return.frame.maxY
+		let pageSize = 4
+		
+		myScrollView = UIScrollView(frame: CGRect(x: 0, y: CONST_VIEWS_HEIGHT["Header"]!, width: CONST_FRAMESIZE.width, height: CONST_VIEWS_HEIGHT["Body"]!))
+		myScrollView.showsHorizontalScrollIndicator = false;
+		myScrollView.showsVerticalScrollIndicator = false
+		myScrollView.isPagingEnabled = true
+		myScrollView.contentSize = CGSize(width: CGFloat(pageSize) * width, height: 0)
+		_return.addSubview(myScrollView)
+		
+		// ページ数分ボタンを生成する.
+		for i in 0 ..< pageSize {
+			
+			// ページごとに異なるラベルを生成する.
+			
+			let myLabel:UILabel = UILabel(frame: CGRect(x: CGFloat(i) * width + width/2 - 40, y: height/2 - 40, width: 80, height: 80))
+			myLabel.backgroundColor = UIColor.black
+			myLabel.textColor = UIColor.white
+			myLabel.textAlignment = NSTextAlignment.center
+			myLabel.layer.masksToBounds = true
+			myLabel.text = "Page\(i)"
+			
+			myLabel.font = UIFont.systemFont(ofSize: UIFont.smallSystemFontSize)
+			myLabel.layer.cornerRadius = 40.0
+			
+			myScrollView.addSubview(myLabel)
+		}
+		
+		// PageControlを作成する.
+		myPagecontrol = UIPageControl(frame: CGRect(x:0, y:0, width:width, height:24))
+		myPagecontrol.backgroundColor = self.CONST_BG
+		myPagecontrol.numberOfPages = pageSize
+		myPagecontrol.currentPage = 0
+		myPagecontrol.isUserInteractionEnabled = false
+		_return.addSubview(myPagecontrol)
+
 		return _return
 	}
 	
@@ -73,4 +130,5 @@ class SelectItemsViewModel: NSObject {
 		return _return
 	}
 
+	
 }

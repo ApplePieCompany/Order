@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		0A0F0B0D1F22D5CC00C519C1 /* ItemModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A0F0B0C1F22D5CC00C519C1 /* ItemModel.swift */; };
-		0A0F0B0F1F232ED800C519C1 /* cart.png in Resources */ = {isa = PBXBuildFile; fileRef = 0A0F0B0E1F232ED800C519C1 /* cart.png */; };
 		0A0F0B111F23309900C519C1 /* SelectItemsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A0F0B101F23309900C519C1 /* SelectItemsViewModel.swift */; };
 		0A125E7E1F18B88100B9E34E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A125E7D1F18B88100B9E34E /* AppDelegate.swift */; };
 		0A125E801F18B88100B9E34E /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A125E7F1F18B88100B9E34E /* ViewController.swift */; };
@@ -37,6 +36,8 @@
 		0A7040BE1F22D26B003BCDA6 /* 生姜焼き定食.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 0A7040B11F22D26B003BCDA6 /* 生姜焼き定食.jpg */; };
 		0A7040BF1F22D26B003BCDA6 /* 天丼.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 0A7040B21F22D26B003BCDA6 /* 天丼.jpg */; };
 		0A7DD0F31F1EFCD100438247 /* SelectItemsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A7DD0F21F1EFCD100438247 /* SelectItemsViewController.swift */; };
+		0AD3066B1F24216E003AE5BE /* cart.png in Resources */ = {isa = PBXBuildFile; fileRef = 0AD3066A1F24216E003AE5BE /* cart.png */; };
+		0AD3066D1F24222A003AE5BE /* search.png in Resources */ = {isa = PBXBuildFile; fileRef = 0AD3066C1F24222A003AE5BE /* search.png */; };
 		0AE7F8A01F1F3082009453E3 /* OrderModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AE7F89F1F1F3082009453E3 /* OrderModel.swift */; };
 		0AE7F8A21F1F4084009453E3 /* HistoryViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AE7F8A11F1F4084009453E3 /* HistoryViewModel.swift */; };
 		0AF13DD91F1DDCEE005D5C65 /* list.png in Resources */ = {isa = PBXBuildFile; fileRef = 0AF13DD81F1DDCEE005D5C65 /* list.png */; };
@@ -62,7 +63,6 @@
 
 /* Begin PBXFileReference section */
 		0A0F0B0C1F22D5CC00C519C1 /* ItemModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ItemModel.swift; sourceTree = "<group>"; };
-		0A0F0B0E1F232ED800C519C1 /* cart.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cart.png; sourceTree = "<group>"; };
 		0A0F0B101F23309900C519C1 /* SelectItemsViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SelectItemsViewModel.swift; sourceTree = "<group>"; };
 		0A125E7A1F18B88100B9E34E /* Order.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Order.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0A125E7D1F18B88100B9E34E /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -97,6 +97,8 @@
 		0A7040B11F22D26B003BCDA6 /* 生姜焼き定食.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "生姜焼き定食.jpg"; sourceTree = "<group>"; };
 		0A7040B21F22D26B003BCDA6 /* 天丼.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "天丼.jpg"; sourceTree = "<group>"; };
 		0A7DD0F21F1EFCD100438247 /* SelectItemsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SelectItemsViewController.swift; sourceTree = "<group>"; };
+		0AD3066A1F24216E003AE5BE /* cart.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cart.png; sourceTree = "<group>"; };
+		0AD3066C1F24222A003AE5BE /* search.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = search.png; sourceTree = "<group>"; };
 		0AE7F89F1F1F3082009453E3 /* OrderModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OrderModel.swift; sourceTree = "<group>"; };
 		0AE7F8A11F1F4084009453E3 /* HistoryViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HistoryViewModel.swift; sourceTree = "<group>"; };
 		0AF13DD81F1DDCEE005D5C65 /* list.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = list.png; sourceTree = "<group>"; };
@@ -218,7 +220,8 @@
 		0A125EB01F18BA0F00B9E34E /* Assets */ = {
 			isa = PBXGroup;
 			children = (
-				0A0F0B0E1F232ED800C519C1 /* cart.png */,
+				0AD3066C1F24222A003AE5BE /* search.png */,
+				0AD3066A1F24216E003AE5BE /* cart.png */,
 				0A7040A51F22D1A6003BCDA6 /* DemoImages */,
 				0AF13DD81F1DDCEE005D5C65 /* list.png */,
 				0A125EB71F18BCB100B9E34E /* conf.png */,
@@ -356,14 +359,15 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0A0F0B0F1F232ED800C519C1 /* cart.png in Resources */,
 				0A7040B81F22D26B003BCDA6 /* カレーライス.jpg in Resources */,
 				0A7040B91F22D26B003BCDA6 /* ハヤシライス.jpg in Resources */,
 				0A7040B51F22D26B003BCDA6 /* オムライス.jpg in Resources */,
 				0A7040B71F22D26B003BCDA6 /* から揚げ定食.jpg in Resources */,
 				0A7040BE1F22D26B003BCDA6 /* 生姜焼き定食.jpg in Resources */,
+				0AD3066B1F24216E003AE5BE /* cart.png in Resources */,
 				0A7040B41F22D26B003BCDA6 /* おにぎり.jpg in Resources */,
 				0A7040BB1F22D26B003BCDA6 /* 鮭の定食.jpg in Resources */,
+				0AD3066D1F24222A003AE5BE /* search.png in Resources */,
 				0A125E881F18B88100B9E34E /* LaunchScreen.storyboard in Resources */,
 				0A7040BA1F22D26B003BCDA6 /* 海鮮丼.jpg in Resources */,
 				0AF13DD91F1DDCEE005D5C65 /* list.png in Resources */,
