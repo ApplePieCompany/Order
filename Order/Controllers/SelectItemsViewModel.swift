@@ -32,6 +32,7 @@ class SelectItemsViewModel: NSObject {
 	
 	public var myPagecontrol : UIPageControl!
 	public var myScrollView : UIScrollView!
+	public var myPageSize : Int!
 	
 	override init() {
 	}
@@ -42,7 +43,9 @@ class SelectItemsViewModel: NSObject {
 		self.CONST_STATUSBAR_HEIGHT = _staHeight + 30
 		self.CONST_VIEWS_HEIGHT["Body"] = CONST_FRAMESIZE.height - self.CONST_NAVIGATIONBAR_HEIGHT - self.CONST_STATUSBAR_HEIGHT - self.CONST_VIEWS_HEIGHT["Header"]! - self.CONST_VIEWS_HEIGHT["Footer"]!
 		self.CONST_BG = shareController.convHex2Color(_hexStr: "F5ECCE", _alpha:1)
+
 		self.segconIdx = _segcon
+		self.myPageSize = 3
 	}
 	
 	func getHeaderView() -> UIView{
@@ -82,31 +85,24 @@ class SelectItemsViewModel: NSObject {
 	func getBodyView() -> UIView{
 		let _return : UIView = UIView(frame: CGRect(x: 0, y: self.CONST_NAVIGATIONBAR_HEIGHT + CONST_VIEWS_HEIGHT["Header"]!, width: self.CONST_FRAMESIZE.width, height: CONST_VIEWS_HEIGHT["Body"]!))
 		_return.backgroundColor = UIColor.white
-
-		// ビューの縦、横のサイズを取得する.
 		let width = _return.frame.maxX
 		let height = _return.frame.maxY
-		let pageSize = 4
 		
 		myScrollView = UIScrollView(frame: CGRect(x: 0, y: CONST_VIEWS_HEIGHT["Header"]!, width: CONST_FRAMESIZE.width, height: CONST_VIEWS_HEIGHT["Body"]!))
 		myScrollView.showsHorizontalScrollIndicator = false;
 		myScrollView.showsVerticalScrollIndicator = false
 		myScrollView.isPagingEnabled = true
-		myScrollView.contentSize = CGSize(width: CGFloat(pageSize) * width, height: 0)
+		myScrollView.contentSize = CGSize(width: CGFloat(self.myPageSize) * width, height: 0)
 		_return.addSubview(myScrollView)
 		
 		// ページ数分ボタンを生成する.
-		for i in 0 ..< pageSize {
-			
-			// ページごとに異なるラベルを生成する.
-			
+		for i in 0 ..< self.myPageSize {
 			let myLabel:UILabel = UILabel(frame: CGRect(x: CGFloat(i) * width + width/2 - 40, y: height/2 - 40, width: 80, height: 80))
 			myLabel.backgroundColor = UIColor.black
 			myLabel.textColor = UIColor.white
 			myLabel.textAlignment = NSTextAlignment.center
 			myLabel.layer.masksToBounds = true
 			myLabel.text = "Page\(i)"
-			
 			myLabel.font = UIFont.systemFont(ofSize: UIFont.smallSystemFontSize)
 			myLabel.layer.cornerRadius = 40.0
 			
@@ -116,7 +112,7 @@ class SelectItemsViewModel: NSObject {
 		// PageControlを作成する.
 		myPagecontrol = UIPageControl(frame: CGRect(x:0, y:0, width:width, height:24))
 		myPagecontrol.backgroundColor = self.CONST_BG
-		myPagecontrol.numberOfPages = pageSize
+		myPagecontrol.numberOfPages = self.myPageSize
 		myPagecontrol.currentPage = 0
 		myPagecontrol.isUserInteractionEnabled = false
 		_return.addSubview(myPagecontrol)
@@ -129,6 +125,4 @@ class SelectItemsViewModel: NSObject {
 		_return.backgroundColor = UIColor.white
 		return _return
 	}
-
-	
 }

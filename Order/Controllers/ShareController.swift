@@ -181,6 +181,7 @@ class ShareController: NSObject {
 	}
 }
 
+//EXTENSION UICOLOR
 extension UIColor {
 	class func hexStr ( hexStr : NSString, alpha : CGFloat) -> UIColor {
 		var hexStr = hexStr

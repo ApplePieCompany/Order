@@ -74,8 +74,38 @@ class ItemModels: NSObject{
 		ItemModel(_code: "Item_314", _name: "おにぎり３１４", _tanka: 200, _photo: UIImage(named: "おにぎり.jpg")!, _category:3),
 		ItemModel(_code: "Item_315", _name: "おにぎり３１５", _tanka: 200, _photo: UIImage(named: "おにぎり.jpg")!, _category:3)
 	]
+
+	func getItems(_category: Int, _current: Int) -> [ItemModel]{
+		var _return : [ItemModel] = []
+		
+		let _ItemModels : ItemModels = ItemModels()
+		let _min : Int!
+		var _max : Int!
+		var _targetItems : [ItemModel] = _ItemModels.makeList(_category: _category)
+		
+		if(_current == 0){ _min = 0 }
+		else{
+			if(_current == _targetItems.count - 1){
+				_min = _current - 2
+			}
+			else{ _min = _current - 1 }
+		}
+		_max = _min + 2
+		
+		for i in _min..._max{
+			_return.append(_targetItems[i])
+		}
+		
+		return _return
+	}
 	
-	func makeList() -> [ItemModel]{
+	func makeList(_category: Int) -> [ItemModel]{
+		var _return : [ItemModel] = []
+		
+		for i in 0..<CONST_DEMODATAS.count{
+			if(CONST_DEMODATAS[i].category == _category){ _return.append(CONST_DEMODATAS[i]) }
+		}
+		
 		return CONST_DEMODATAS
 	}
 	

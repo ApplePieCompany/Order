@@ -68,6 +68,13 @@ class SelectItemsViewController: UIViewController, UIScrollViewDelegate{
 		super.didReceiveMemoryWarning()
 		// Dispose of any resources that can be recreated.
 	}
+
+	func getItemList(){
+		let itemModels : ItemModels = ItemModels()
+		let _itemModels : [ItemModel] = itemModels.getItems(_category: self._itemSegcon, _current: selectItemsViewModel.myPagecontrol.currentPage)
+		
+		for i in 0..<_itemModels.count{ print(_itemModels[i].code) }
+	}
 	
 	/*
 	// MARK: - Navigation
@@ -103,13 +110,11 @@ class SelectItemsViewController: UIViewController, UIScrollViewDelegate{
 	
 	
 	/* DELEGATE */
-	func scrollViewDidScroll(_ scrollView: UIScrollView) {
-		print("didScroll")
-	}
-
-	func scrollViewDidEndDecelerating(scrollView: UIScrollView) {
+	func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
 		if fmod(scrollView.contentOffset.x, scrollView.frame.maxX) == 0 {
-			selectItemsViewModel.myPagecontrol.currentPage = Int(selectItemsViewModel.myScrollView.contentOffset.x / selectItemsViewModel.myScrollView.frame.maxX)
+			selectItemsViewModel.myPagecontrol.currentPage = Int(scrollView.contentOffset.x / scrollView.frame.maxX)
 		}
+		
+		self.getItemList()
 	}
 }
