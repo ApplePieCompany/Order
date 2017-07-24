@@ -15,6 +15,7 @@ class SelectItemsViewController: UIViewController, UIScrollViewDelegate{
 	
 	var CONST_TAG = 12
 	var CONST_FRAMESIZE : CGSize!
+	var CONST_SEGCON : NSArray = ["丼","定食", "洋食","一品料理"]
 	
 	public var myCalender : Date!
 	
@@ -23,6 +24,7 @@ class SelectItemsViewController: UIViewController, UIScrollViewDelegate{
 	var _footerView : UIView!
 	
 	var _itemSegcon : Int!
+	var _itemCount = 0
 	
 	init() {
 		super.init(nibName: nil, bundle: nil)
@@ -59,9 +61,14 @@ class SelectItemsViewController: UIViewController, UIScrollViewDelegate{
 		
 		selectItemsViewModel.search_btn.addTarget(self, action: #selector(onClickMyButton(sender:)), for: .touchUpInside)
 		selectItemsViewModel.cart_btn.addTarget(self, action: #selector(onClickMyButton(sender:)), for: .touchUpInside)
-		selectItemsViewModel.segcon.addTarget(self, action: #selector(self.segconChanged(segcon:)), for: UIControlEvents.valueChanged)
+		//		selectItemsViewModel.segcon.addTarget(self, action: #selector(self.segconChanged(segcon:)), for: UIControlEvents.valueChanged)
 		
-		selectItemsViewModel.myScrollView.delegate = self
+		selectItemsViewModel.category_scroll.delegate = self
+		//		selectItemsViewModel.myScrollView.delegate = self
+		
+		self.getCategoryList()
+		selectItemsViewModel.category_scroll.viewWithTag(101)?.backgroundColor = UIColor.orange
+		self.getItemList()
 	}
 	
 	override func didReceiveMemoryWarning() {
@@ -69,11 +76,50 @@ class SelectItemsViewController: UIViewController, UIScrollViewDelegate{
 		// Dispose of any resources that can be recreated.
 	}
 
-	func getItemList(){
-		let itemModels : ItemModels = ItemModels()
-		let _itemModels : [ItemModel] = itemModels.getItems(_category: self._itemSegcon, _current: selectItemsViewModel.myPagecontrol.currentPage)
+	func getCategoryList(){
+		let _BASEWIDTH = 122
+		var _BASETAG = 101
 		
-		for i in 0..<_itemModels.count{ print(_itemModels[i].code) }
+		for j in 0 ..< self.CONST_SEGCON.count {
+			let _x = j * _BASEWIDTH + 4
+			let _button : UIButton = UIButton(frame: CGRect(x: _x, y: 0, width: _BASEWIDTH - 4, height: 20))
+			_button.tag = _BASETAG
+			_button.backgroundColor = UIColor.lightGray
+			_button.setTitle(self.CONST_SEGCON[j] as? String, for: .normal)
+			_button.setTitleColor(UIColor.white, for: .normal)
+			_button.titleLabel?.font = UIFont.systemFont(ofSize: 14)
+			_button.titleLabel?.textAlignment = .center
+			_button.layer.cornerRadius = 4.0
+			_button.addTarget(self, action: #selector(onClickMyButton(sender:)), for: .touchUpInside)
+			selectItemsViewModel.category_scroll.addSubview(_button)
+			
+			_BASETAG += 1
+		}
+	}
+	
+	func getItemList(){
+		/*
+		let itemModels : ItemModels = ItemModels()
+		let _itemModels : [ItemModel] = itemModels.getItems(_category: self._itemSegcon, _current: 0)
+		let width = self.CONST_FRAMESIZE.width
+		let height = self.CONST_FRAMESIZE.height
+		
+		let subviews = selectItemsViewModel.myScrollView.subviews
+		for subview in subviews { subview.removeFromSuperview() }
+
+		for i in 0 ..< _itemModels.count {
+			let myLabel:UILabel = UILabel(frame: CGRect(x: CGFloat(i) * width + width/2 - 40, y: height/2 - 40, width: 80, height: 80))
+			myLabel.backgroundColor = UIColor.black
+			myLabel.textColor = UIColor.white
+			myLabel.textAlignment = NSTextAlignment.center
+			myLabel.layer.masksToBounds = true
+			myLabel.text = "Page\(i)"
+			myLabel.font = UIFont.systemFont(ofSize: UIFont.smallSystemFontSize)
+			myLabel.layer.cornerRadius = 40.0
+			
+			selectItemsViewModel.myScrollView.addSubview(myLabel)
+		}
+		*/
 	}
 	
 	/*
@@ -91,6 +137,14 @@ class SelectItemsViewController: UIViewController, UIScrollViewDelegate{
 		switch(sender.tag){
 		case 1 , 2:
 			print(sender.tag)
+
+		case 101 ,102, 103, 104:
+			for i in 101...104{
+				let _temp = selectItemsViewModel.category_scroll.viewWithTag(i)
+				_temp?.backgroundColor = UIColor.lightGray
+			}
+			let _target = selectItemsViewModel.category_scroll.viewWithTag(sender.tag)
+			_target?.backgroundColor = UIColor.orange
 			
 		default:print("error")
 		}
@@ -100,6 +154,7 @@ class SelectItemsViewController: UIViewController, UIScrollViewDelegate{
 	internal func segconChanged(segcon: UISegmentedControl){
 		switch segcon.selectedSegmentIndex {
 		case 0, 1:
+			self._itemCount = 0
 			print(segcon.selectedSegmentIndex)
 			
 		default:
@@ -111,10 +166,29 @@ class SelectItemsViewController: UIViewController, UIScrollViewDelegate{
 	
 	/* DELEGATE */
 	func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
-		if fmod(scrollView.contentOffset.x, scrollView.frame.maxX) == 0 {
-			selectItemsViewModel.myPagecontrol.currentPage = Int(scrollView.contentOffset.x / scrollView.frame.maxX)
+		if(scrollView.tag==1){
+			scrollView.contentOffset.x = CGFloat(Int(scrollView.contentOffset.x / 375) * 360)
+			
+			//			print("CONTENT OFFSET IS \(scrollView.contentOffset.x)")
 		}
+	}
+
+	/*
+	func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+		let _exPage = selectItemsViewModel.myPagecontrol.currentPage
+		var _currentPage = _exPage
+		
+		if fmod(scrollView.contentOffset.x, scrollView.frame.maxX) == 0 {
+			_currentPage = Int(scrollView.contentOffset.x / scrollView.frame.maxX)
+		}
+
+		let itemModels : ItemModels = ItemModels()
+		let _itemModels : [ItemModel] = itemModels.getItems(_category: self._itemSegcon, _current: selectItemsViewModel.myPagecontrol.currentPage)
+		selectItemsViewModel.myPagecontrol.currentPage = _currentPage
+
+		print("Ex is \(_exPage) : Now is \(_currentPage) : Items : \(_itemModels.count)")
 		
 		self.getItemList()
 	}
+	*/
 }

@@ -20,17 +20,15 @@ class SelectItemsViewModel: NSObject {
 	var CONST_HEADER_TITLE = "商品選択"
 	var CONST_HEADER_SEARCHPNG = "search.png"
 	var CONST_HEADER_CARTPNG = "cart.png"
-	var CONST_SEGCON : NSArray = ["丼","定食", "洋食","一品料理"]
 	var CONST_ATTRFORECOLOR = [ NSForegroundColorAttributeName: UIColor.blue ]
 	
 	var CONST_VIEWS_HEIGHT : [String:CGFloat] = ["Header":64, "Body":0,"Footer":1]
 
 	public var search_btn : UIButton!
 	public var cart_btn : UIButton!
-	public var segcon : UISegmentedControl!
-	public var segconIdx: Int!
+	public var category_scroll : UIScrollView!
+	public var category_scroll_max : CGFloat = 2
 	
-	public var myPagecontrol : UIPageControl!
 	public var myScrollView : UIScrollView!
 	public var myPageSize : Int!
 	
@@ -43,9 +41,6 @@ class SelectItemsViewModel: NSObject {
 		self.CONST_STATUSBAR_HEIGHT = _staHeight + 30
 		self.CONST_VIEWS_HEIGHT["Body"] = CONST_FRAMESIZE.height - self.CONST_NAVIGATIONBAR_HEIGHT - self.CONST_STATUSBAR_HEIGHT - self.CONST_VIEWS_HEIGHT["Header"]! - self.CONST_VIEWS_HEIGHT["Footer"]!
 		self.CONST_BG = shareController.convHex2Color(_hexStr: "F5ECCE", _alpha:1)
-
-		self.segconIdx = _segcon
-		self.myPageSize = 3
 	}
 	
 	func getHeaderView() -> UIView{
@@ -70,15 +65,15 @@ class SelectItemsViewModel: NSObject {
 		self.cart_btn.setImage(_cartImage, for: .normal)
 		_return.addSubview(self.cart_btn)
 
-		self.segcon = UISegmentedControl(items: CONST_SEGCON as [AnyObject])
-		self.segcon.setTitleTextAttributes(CONST_ATTRFORECOLOR, for: UIControlState.selected)
-		self.segcon.center = CGPoint(x: self.CONST_FRAMESIZE.width/2, y: self.cart_btn.frame.origin.y + self.cart_btn.frame.size.height + 24)
-		self.segcon.backgroundColor = UIColor.blue
-		self.segcon.tintColor = UIColor.white
-		self.segcon.layer.cornerRadius = 5
-		self.segcon.selectedSegmentIndex = self.segconIdx
-		_return.addSubview(self.segcon)
-		
+		self.category_scroll = UIScrollView()
+		self.category_scroll.backgroundColor = UIColor.clear
+		self.category_scroll.isPagingEnabled = true
+		self.category_scroll.bounces = true
+		self.category_scroll.tag = 1
+		self.category_scroll.frame = CGRect(x: 0, y: self.cart_btn.frame.origin.y + self.cart_btn.frame.size.height + 16, width: self.CONST_FRAMESIZE.width, height: 20)
+		self.category_scroll.contentSize = CGSize(width:self.CONST_FRAMESIZE.width * category_scroll_max, height:0)
+		_return.addSubview(self.category_scroll)
+
 		return _return
 	}
 	
@@ -88,14 +83,17 @@ class SelectItemsViewModel: NSObject {
 		let width = _return.frame.maxX
 		let height = _return.frame.maxY
 		
+		/*
 		myScrollView = UIScrollView(frame: CGRect(x: 0, y: CONST_VIEWS_HEIGHT["Header"]!, width: CONST_FRAMESIZE.width, height: CONST_VIEWS_HEIGHT["Body"]!))
 		myScrollView.showsHorizontalScrollIndicator = false;
 		myScrollView.showsVerticalScrollIndicator = false
 		myScrollView.isPagingEnabled = true
 		myScrollView.contentSize = CGSize(width: CGFloat(self.myPageSize) * width, height: 0)
 		_return.addSubview(myScrollView)
+		*/
 		
 		// ページ数分ボタンを生成する.
+		/*
 		for i in 0 ..< self.myPageSize {
 			let myLabel:UILabel = UILabel(frame: CGRect(x: CGFloat(i) * width + width/2 - 40, y: height/2 - 40, width: 80, height: 80))
 			myLabel.backgroundColor = UIColor.black
@@ -108,14 +106,17 @@ class SelectItemsViewModel: NSObject {
 			
 			myScrollView.addSubview(myLabel)
 		}
+		*/
 		
 		// PageControlを作成する.
+/*
 		myPagecontrol = UIPageControl(frame: CGRect(x:0, y:0, width:width, height:24))
 		myPagecontrol.backgroundColor = self.CONST_BG
 		myPagecontrol.numberOfPages = self.myPageSize
 		myPagecontrol.currentPage = 0
 		myPagecontrol.isUserInteractionEnabled = false
 		_return.addSubview(myPagecontrol)
+*/
 
 		return _return
 	}
@@ -125,4 +126,6 @@ class SelectItemsViewModel: NSObject {
 		_return.backgroundColor = UIColor.white
 		return _return
 	}
+	
+	
 }
