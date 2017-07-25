@@ -15,6 +15,8 @@ class SelectItemsViewModel: NSObject {
 	var CONST_FRAMESIZE : CGSize!
 	var CONST_NAVIGATIONBAR_HEIGHT : CGFloat!
 	var CONST_STATUSBAR_HEIGHT : CGFloat!
+	let CONST_WEEK = ["","日", "月", "火", "水", "木", "金", "土"]
+	var CONST_FORMATTER = "yyyy年MM月dd日"
 	var CONST_BG : UIColor!
 	var CONST_BG_HEX :NSString = "F5ECCE"
 
@@ -63,6 +65,12 @@ class SelectItemsViewModel: NSObject {
 	func getHeaderView() -> UIView{
 		let _return : UIView = UIView(frame: CGRect(x: 0, y: self.CONST_NAVIGATIONBAR_HEIGHT, width: self.CONST_FRAMESIZE.width, height: CONST_VIEWS_HEIGHT["Header"]!))
 		_return.backgroundColor = self.CONST_BG
+
+		let textLabel : UILabel = UILabel(frame: CGRect(x:0, y:0, width:CONST_FRAMESIZE.width, height:35))
+		textLabel.text = getHeaderText()
+		textLabel.textAlignment = NSTextAlignment.center
+		textLabel.font = UIFont(name: "Arial", size: 16)
+		_return.addSubview(textLabel)
 		
 		self.sort_btn = UIButton(frame: CGRect(x: CONST_FRAMESIZE.width - 16 - 60, y: 8, width: 16, height: 16))
 		self.sort_btn.tag = CONST_TAGS["sort_btn"]!
@@ -94,6 +102,18 @@ class SelectItemsViewModel: NSObject {
 		return _return
 	}
 	
+	func getHeaderText() -> String{
+		let appDelegate:AppDelegate = UIApplication.shared.delegate as! AppDelegate
+
+		let fmt = DateFormatter()
+		fmt.dateFormat = CONST_FORMATTER
+		
+		let comp = Calendar.Component.weekday
+		let weekday = NSCalendar.current.component(comp, from: appDelegate.targetDate)
+		
+		return fmt.string(from: appDelegate.targetDate)+"(\(CONST_WEEK[weekday]))"
+	}
+	
 	func getBodyView() -> UIView{
 		let _return : UIView = UIView(frame: CGRect(x: 0, y: self.CONST_NAVIGATIONBAR_HEIGHT + CONST_VIEWS_HEIGHT["Header"]!, width: self.CONST_FRAMESIZE.width, height: CONST_VIEWS_HEIGHT["Body"]!))
 		_return.backgroundColor = self.CONST_BG
@@ -118,7 +138,7 @@ class SelectItemsViewModel: NSObject {
 		return _leftView
 	}
 	
-	func makeCenterView(width: CGFloat, height : CGFloat) -> UIView{
+	func makeCenterView(width: CGFloat, height : CGFloat) -> UIScrollView{
 		self.item_scroll = UIScrollView(frame: CGRect(x: 36, y: 0, width: width - 36 - 36, height: height))
 		self.item_scroll.tag = CONST_TAGS["item_scroll"]!
 		self.item_scroll.backgroundColor = UIColor.clear
@@ -142,6 +162,5 @@ class SelectItemsViewModel: NSObject {
 		_return.backgroundColor = UIColor.white
 		return _return
 	}
-	
 	
 }

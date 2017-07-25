@@ -36,7 +36,6 @@ class SelectItemsViewController: UIViewController, UIScrollViewDelegate{
 	var _category_idx : Int!
 	var _item_list : [ItemModel] = []
 	
-	
 	init() {
 		super.init(nibName: nil, bundle: nil)
 		
@@ -117,6 +116,7 @@ class SelectItemsViewController: UIViewController, UIScrollViewDelegate{
 		self._item_list = _ItemModels.makeList(_category: self._category_idx - 101)
 
 		selectItemsViewModel.item_scroll.contentSize = CGSize(width:selectItemsViewModel.item_scroll.frame.width * CGFloat(self._item_list.count) , height:0)
+		selectItemsViewModel.item_scroll.contentOffset.x = 0
 		
 		self.showItem()
 	}
@@ -134,7 +134,6 @@ class SelectItemsViewController: UIViewController, UIScrollViewDelegate{
 			let _width = item_detail_view.frame.size.width - 8
 			let _height = _width
 			
-			
 			let _item_page = UILabel(frame: CGRect(x: item_detail_view.frame.size.width - 36, y: -16, width: 48, height: 20))
 			_item_page.text = "nil"
 			_item_page.textAlignment = .left
@@ -150,16 +149,54 @@ class SelectItemsViewController: UIViewController, UIScrollViewDelegate{
 			item_detail_view.addSubview(_imageView)
 			
 			var _y = 4 + _imageView.frame.height + 8
-			
 			let _name : UIView = self.getItemName(_width: _width, _y: _y, _labelArg:"商品名", _valArg:"\(self._item_list[i].name!)", _span:_span)
 			item_detail_view.addSubview(_name)
 			
 			_y += (_name.frame.height + 8)
-			let _tanka : UIView = self.getItemName(_width: _width, _y: _y, _labelArg:"単　価", _valArg:"\(self._item_list[i].tanka!)円", _span:_span)
+			let _tanka : UIView = self.getItemName(_width: _width, _y: _y, _labelArg:"税込み", _valArg:"\(self._item_list[i].tanka!)円", _span:_span)
 			item_detail_view.addSubview(_tanka)
 			
+			let _footer : UIView = UIView(frame: CGRect(x: 0, y: selectItemsViewModel.item_scroll.frame.size.height - 96, width: selectItemsViewModel.item_scroll.frame.size.width - 32, height: 64))
+			_footer.backgroundColor = UIColor.lightGray
+			
+			let _countLabel : UILabel = UILabel(frame: CGRect(x: 8 , y: 6, width: _width, height: 30))
+			_countLabel.text = "数　量："
+			_countLabel.textColor = UIColor.white
+			_countLabel.sizeToFit()
+			_footer.addSubview(_countLabel)
+			
+			let _order_label : UILabel = UILabel(frame: CGRect(x: 8 + _countLabel.frame.width, y: 2, width: 30, height: 29))
+			_order_label.tag = 201 + i
+			_order_label.text = "0"
+			_order_label.backgroundColor = UIColor.white
+			_order_label.textAlignment = .center
+			_footer.addSubview(_order_label)
+			
+			let _stepper : UIStepper = UIStepper(frame: CGRect(x: 8 + _countLabel.frame.width + _order_label.frame.width + 2, y: 2, width: 21, height: 21))
+			_stepper.tag = 301 + i
+			_stepper.backgroundColor = UIColor.blue
+			_stepper.tintColor = UIColor.white
+			_stepper.minimumValue = 0
+			_stepper.maximumValue = 99
+			_stepper.value = 0
+			_stepper.autorepeat = true
+			_stepper.addTarget(self, action: #selector(self.stepperOneChanged(stepper:)), for: UIControlEvents.valueChanged)
+			_footer.addSubview(_stepper)
+			
+			let _cartBtn : UIButton = UIButton(frame: CGRect(x: _footer.frame.width - 65, y: 2, width: 62, height: 29))
+			_cartBtn.tag = 401 + i
+			_cartBtn.backgroundColor = UIColor.red
+			_cartBtn.setTitle("買い物かごに\n入れる", for: .normal)
+			_cartBtn.titleLabel?.font = UIFont.systemFont(ofSize: 9)
+			_cartBtn.titleLabel?.textAlignment = .center
+			_cartBtn.titleLabel?.numberOfLines = 2
+			_cartBtn.addTarget(self, action: #selector(onClickMyButton(sender:)), for: .touchUpInside)
+			
+			_footer.addSubview(_cartBtn)
+			
+			item_detail_view.addSubview(_footer)
+			
 			selectItemsViewModel.item_scroll.addSubview(item_detail_view)
-		
 		}
 	}
 	
@@ -194,7 +231,7 @@ class SelectItemsViewController: UIViewController, UIScrollViewDelegate{
 	}
 	*/
 
-	/* ヘッダボタン処理 */
+	/* ボタン処理 */
 	internal func onClickMyButton(sender: UIButton){
 		switch(sender.tag){
 		case selectItemsViewModel.CONST_TAGS["sort_btn"]!:
@@ -204,31 +241,41 @@ class SelectItemsViewController: UIViewController, UIScrollViewDelegate{
 		case selectItemsViewModel.CONST_TAGS["search_btn"]! , selectItemsViewModel.CONST_TAGS["cart_btn"]!:
 			print(sender.tag)
 			
-		case 101 ,102, 103, 104:
+		case 101..<105:
 			for i in 101...104{ selectItemsViewModel.category_scroll.viewWithTag(i)?.backgroundColor = UIColor.lightGray }
 			selectItemsViewModel.category_scroll.viewWithTag(sender.tag)?.backgroundColor = UIColor.orange
 			
 			self._category_idx = sender.tag
 			self.makeItemList()
 
+		case 401..<500:
+			print("HI")
+			
 		case selectItemsViewModel.CONST_TAGS["back_btn"]!, selectItemsViewModel.CONST_TAGS["next_btn"]!:
-			var _pos : CGFloat!
+			var _pos : CGPoint = CGPoint(x: 0, y: 0)
 			let _max : CGFloat = CONST_CONTENTOFFSET_WIDTH * CGFloat( self._item_list.count - 1)
 			
 			if(sender.tag == selectItemsViewModel.CONST_TAGS["back_btn"]!){
-				_pos = selectItemsViewModel.item_scroll.contentOffset.x - CONST_CONTENTOFFSET_WIDTH < 0 ? 0: selectItemsViewModel.item_scroll.contentOffset.x - CONST_CONTENTOFFSET_WIDTH
+				_pos.x = selectItemsViewModel.item_scroll.contentOffset.x - CONST_CONTENTOFFSET_WIDTH < 0 ? 0: selectItemsViewModel.item_scroll.contentOffset.x - CONST_CONTENTOFFSET_WIDTH
 			}
 			else{
 				if(sender.tag == selectItemsViewModel.CONST_TAGS["next_btn"]!){
-					_pos = selectItemsViewModel.item_scroll.contentOffset.x + CONST_CONTENTOFFSET_WIDTH > _max ? _max: selectItemsViewModel.item_scroll.contentOffset.x + CONST_CONTENTOFFSET_WIDTH
+					_pos.x = selectItemsViewModel.item_scroll.contentOffset.x + CONST_CONTENTOFFSET_WIDTH > _max ? _max: selectItemsViewModel.item_scroll.contentOffset.x + CONST_CONTENTOFFSET_WIDTH
 				}
 			}
-			selectItemsViewModel.item_scroll.contentOffset.x = _pos
+			_pos.x = CGFloat(Int(_pos.x / CONST_CONTENTOFFSET_WIDTH) * Int(CONST_CONTENTOFFSET_WIDTH))
+			selectItemsViewModel.item_scroll.setContentOffset(_pos, animated: true)
 			
 		default:print("error")
 		}
 	}
 
+	internal func stepperOneChanged(stepper: UIStepper){
+		let _tag = stepper.tag - 100
+		let _target : UILabel = selectItemsViewModel.item_scroll.viewWithTag(_tag) as! UILabel
+		_target.text =  String(Int(stepper.value))
+	}
+	
 	
 	/*          */
 	/* DELEGATE */
@@ -243,31 +290,7 @@ class SelectItemsViewController: UIViewController, UIScrollViewDelegate{
 		}
 		else{
 			if(scrollView.tag == selectItemsViewModel.CONST_TAGS["item_scroll"]!){
-/*
-				print("NOW is \(scrollView.contentOffset.x)")
-				self._item_idx = self._item_idx + 1 >= self._item_list.count ? self._item_list.count - 1: self._item_idx + 1
-				self.showItem()
-				*/
 			}
 		}
 	}
-
-	/*
-	func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
-		let _exPage = selectItemsViewModel.myPagecontrol.currentPage
-		var _currentPage = _exPage
-		
-		if fmod(scrollView.contentOffset.x, scrollView.frame.maxX) == 0 {
-			_currentPage = Int(scrollView.contentOffset.x / scrollView.frame.maxX)
-		}
-
-		let itemModels : ItemModels = ItemModels()
-		let _itemModels : [ItemModel] = itemModels.getItems(_category: self._itemSegcon, _current: selectItemsViewModel.myPagecontrol.currentPage)
-		selectItemsViewModel.myPagecontrol.currentPage = _currentPage
-
-		print("Ex is \(_exPage) : Now is \(_currentPage) : Items : \(_itemModels.count)")
-		
-		self.getItemList()
-	}
-	*/
 }
