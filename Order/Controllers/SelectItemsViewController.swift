@@ -25,6 +25,7 @@ class SelectItemsViewController: UIViewController, UIScrollViewDelegate{
 	var CONST_CATEGORY_WIDTH = 124
 	var CONST_CATEGORY_TAG_BASE = 101
 	var CONST_ITEMS_X : [String:CGFloat] = ["Label":8, "Value":75]
+	var CONST_CONTENTOFFSET_WIDTH : CGFloat!
 	
 	public var myCalender : Date!
 	
@@ -34,10 +35,7 @@ class SelectItemsViewController: UIViewController, UIScrollViewDelegate{
 	
 	var _category_idx : Int!
 	var _item_list : [ItemModel] = []
-	var _item_idx : Int!
 	
-	var _itemSegcon : Int!
-	var _itemCount = 0
 	
 	init() {
 		super.init(nibName: nil, bundle: nil)
@@ -61,12 +59,11 @@ class SelectItemsViewController: UIViewController, UIScrollViewDelegate{
 
 		let appDelegate:AppDelegate = UIApplication.shared.delegate as! AppDelegate
 		self.myCalender = appDelegate.targetDate
-		self._itemSegcon = appDelegate.itemSegcon
 
 		self.CONST_FRAMESIZE = CGSize(width: self.view.frame.width, height: self.view.frame.height)
 		let _navHeight = self.navigationController?.navigationBar.frame.size.height
 		let _staHeight = UIApplication.shared.statusBarFrame.height
-		selectItemsViewModel = SelectItemsViewModel(_size: self.CONST_FRAMESIZE, _navHeight: _navHeight!, _staHeight: _staHeight, _segcon: self._itemSegcon)
+		selectItemsViewModel = SelectItemsViewModel(_size: self.CONST_FRAMESIZE, _navHeight: _navHeight!, _staHeight: _staHeight)
 				
 		self.view.addSubview(selectItemsViewModel.getHeaderView())
 		self.view.addSubview(selectItemsViewModel.getBodyView())
@@ -79,10 +76,10 @@ class SelectItemsViewController: UIViewController, UIScrollViewDelegate{
 		selectItemsViewModel.item_back_btn.addTarget(self, action: #selector(onClickMyButton(sender:)), for: .touchUpInside)
 		selectItemsViewModel.item_next_btn.addTarget(self, action: #selector(onClickMyButton(sender:)), for: .touchUpInside)
 		
-		//		selectItemsViewModel.segcon.addTarget(self, action: #selector(self.segconChanged(segcon:)), for: UIControlEvents.valueChanged)
-		
 		selectItemsViewModel.category_scroll.delegate = self
-		//		selectItemsViewModel.myScrollView.delegate = self
+		selectItemsViewModel.item_scroll.delegate = self
+		
+		self.CONST_CONTENTOFFSET_WIDTH = selectItemsViewModel.item_scroll.frame.width
 		
 		self.getCategoryList()
 		self._category_idx = 101
@@ -116,50 +113,66 @@ class SelectItemsViewController: UIViewController, UIScrollViewDelegate{
 	}
 	
 	func makeItemList(){
-		self._item_idx = 0
-		
 		let _ItemModels : ItemModels = ItemModels()
 		self._item_list = _ItemModels.makeList(_category: self._category_idx - 101)
+
+		selectItemsViewModel.item_scroll.contentSize = CGSize(width:selectItemsViewModel.item_scroll.frame.width * CGFloat(self._item_list.count) , height:0)
 		
 		self.showItem()
 	}
 	
 	func showItem(){
-		let subviews = selectItemsViewModel.item_detail_view.subviews
+		let subviews = selectItemsViewModel.item_scroll.subviews
 		for subview in subviews { subview.removeFromSuperview() }
 		
-		let _width = selectItemsViewModel.item_detail_view.frame.size.width - 8
-		let _height = _width
-		
-		let _imageView : UIImageView = UIImageView(frame: CGRect(x: 4, y: 4, width: _width, height: _height))
-		_imageView.contentMode = .top
-		_imageView.clipsToBounds = true
-		_imageView.image =  shareController.resizeImage(_image: self._item_list[self._item_idx].photo, _size: CGSize(width: _width, height: _height))
-		_imageView.frame = CGRect(x: 4, y: 4, width: _width, height: (_imageView.image?.size.height)!)
-		selectItemsViewModel.item_detail_view.addSubview(_imageView)
-		
-		var _y = 4 + _imageView.frame.height + 8
+		for i in 0..<self._item_list.count{
+			let _span = CONST_CONTENTOFFSET_WIDTH * CGFloat(i)
 
-		let _name : UIView = self.getItemName(_width: _width, _y: _y, _label:"商品名", _val:"\(self._item_list[self._item_idx].name!)")
-		selectItemsViewModel.item_detail_view.addSubview(_name)
+			let item_detail_view = UIView(frame: CGRect(x: 16 + _span, y: 16, width: selectItemsViewModel.item_scroll.frame.size.width - 32, height: selectItemsViewModel.item_scroll.frame.size.height - 32))
+			item_detail_view.backgroundColor = UIColor.white
+			
+			let _width = item_detail_view.frame.size.width - 8
+			let _height = _width
+			
+			
+			let _item_page = UILabel(frame: CGRect(x: item_detail_view.frame.size.width - 36, y: -16, width: 48, height: 20))
+			_item_page.text = "nil"
+			_item_page.textAlignment = .left
+			_item_page.font = UIFont.systemFont(ofSize: 14)
+			_item_page.text = "\(i + 1) / \(self._item_list.count)"
+			item_detail_view.addSubview(_item_page)
+			
+			let _imageView : UIImageView = UIImageView(frame: CGRect(x: 4 + _span, y: 4, width: _width, height: _height))
+			_imageView.contentMode = .top
+			_imageView.clipsToBounds = true
+			_imageView.image =  shareController.resizeImage(_image: self._item_list[i].photo, _size: CGSize(width: _width, height: _height))
+			_imageView.frame = CGRect(x: 4, y: 4, width: _width, height: (_imageView.image?.size.height)!)
+			item_detail_view.addSubview(_imageView)
+			
+			var _y = 4 + _imageView.frame.height + 8
+			
+			let _name : UIView = self.getItemName(_width: _width, _y: _y, _labelArg:"商品名", _valArg:"\(self._item_list[i].name!)", _span:_span)
+			item_detail_view.addSubview(_name)
+			
+			_y += (_name.frame.height + 8)
+			let _tanka : UIView = self.getItemName(_width: _width, _y: _y, _labelArg:"単　価", _valArg:"\(self._item_list[i].tanka!)円", _span:_span)
+			item_detail_view.addSubview(_tanka)
+			
+			selectItemsViewModel.item_scroll.addSubview(item_detail_view)
 		
-		_y += (_name.frame.height + 8)
-		let _tanka : UIView = self.getItemName(_width: _width, _y: _y, _label:"単　価", _val:"\(self._item_list[self._item_idx].tanka!)円")
-		selectItemsViewModel.item_detail_view.addSubview(_tanka)
-		
-		selectItemsViewModel.item_page.text = "\(self._item_idx! + 1) / \(self._item_list.count)"
+		}
 	}
 	
-	func getItemName(_width: CGFloat, _y: CGFloat, _label:String, _val:String) -> UIView{
-		let _return : UIView = UIView(frame: CGRect(x: 0, y: 0, width: _width, height: 20))
+	func getItemName(_width: CGFloat, _y: CGFloat, _labelArg:String, _valArg:String, _span:CGFloat) -> UIView{
+		let _return : UIView = UIView(frame: CGRect(x: 0 + _span, y: 0, width: _width, height: 20))
 		
-		let _label : UILabel = UILabel(frame: CGRect(x: CONST_ITEMS_X["Label"]!, y: _y, width: _width, height: 30))
-		_label.text = "\(_label)："
+		let _label : UILabel = UILabel(frame: CGRect(x: CONST_ITEMS_X["Label"]! , y: _y, width: _width, height: 30))
+		_label.text = "\(_labelArg)："
 		_label.sizeToFit()
 		_return.addSubview(_label)
 		
-		let _val : UILabel = UILabel(frame: CGRect(x: CONST_ITEMS_X["Value"]!, y: _y, width: _width, height: 30))
-		_val.text = "\(_val)"
+		let _val : UILabel = UILabel(frame: CGRect(x: CONST_ITEMS_X["Value"]! , y: _y, width: 200, height: 30))
+		_val.text = "\(_valArg)"
 		_val.numberOfLines = 0
 		_val.sizeToFit()
 		_return.addSubview(_val)
@@ -198,13 +211,19 @@ class SelectItemsViewController: UIViewController, UIScrollViewDelegate{
 			self._category_idx = sender.tag
 			self.makeItemList()
 
-		case selectItemsViewModel.CONST_TAGS["back_btn"]!:
-			self._item_idx = self._item_idx - 1 < 0 ? 0 :self._item_idx - 1
-			self.showItem()
-
-		case selectItemsViewModel.CONST_TAGS["next_btn"]!:
-			self._item_idx = self._item_idx + 1 >= self._item_list.count ? self._item_list.count - 1: self._item_idx + 1
-			self.showItem()
+		case selectItemsViewModel.CONST_TAGS["back_btn"]!, selectItemsViewModel.CONST_TAGS["next_btn"]!:
+			var _pos : CGFloat!
+			let _max : CGFloat = CONST_CONTENTOFFSET_WIDTH * CGFloat( self._item_list.count - 1)
+			
+			if(sender.tag == selectItemsViewModel.CONST_TAGS["back_btn"]!){
+				_pos = selectItemsViewModel.item_scroll.contentOffset.x - CONST_CONTENTOFFSET_WIDTH < 0 ? 0: selectItemsViewModel.item_scroll.contentOffset.x - CONST_CONTENTOFFSET_WIDTH
+			}
+			else{
+				if(sender.tag == selectItemsViewModel.CONST_TAGS["next_btn"]!){
+					_pos = selectItemsViewModel.item_scroll.contentOffset.x + CONST_CONTENTOFFSET_WIDTH > _max ? _max: selectItemsViewModel.item_scroll.contentOffset.x + CONST_CONTENTOFFSET_WIDTH
+				}
+			}
+			selectItemsViewModel.item_scroll.contentOffset.x = _pos
 			
 		default:print("error")
 		}
@@ -214,8 +233,22 @@ class SelectItemsViewController: UIViewController, UIScrollViewDelegate{
 	/*          */
 	/* DELEGATE */
 	/*          */
+	func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+		if(scrollView.tag == selectItemsViewModel.CONST_TAGS["item_scroll"]!){
+		}
+	}
+	
 	func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
 		if(scrollView.tag == selectItemsViewModel.CONST_TAGS["category_scroll"]!){
+		}
+		else{
+			if(scrollView.tag == selectItemsViewModel.CONST_TAGS["item_scroll"]!){
+/*
+				print("NOW is \(scrollView.contentOffset.x)")
+				self._item_idx = self._item_idx + 1 >= self._item_list.count ? self._item_list.count - 1: self._item_idx + 1
+				self.showItem()
+				*/
+			}
 		}
 	}
 

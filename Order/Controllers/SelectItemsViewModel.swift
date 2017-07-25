@@ -16,6 +16,7 @@ class SelectItemsViewModel: NSObject {
 	var CONST_NAVIGATIONBAR_HEIGHT : CGFloat!
 	var CONST_STATUSBAR_HEIGHT : CGFloat!
 	var CONST_BG : UIColor!
+	var CONST_BG_HEX :NSString = "F5ECCE"
 
 	var CONST_HEADER_SORT : [String] = ["sort1.png","sort2.png"]
 	var CONST_HEADER_SEARCHPNG = "search.png"
@@ -26,13 +27,13 @@ class SelectItemsViewModel: NSObject {
 		"search_btn" : 2,
 		"cart_btn" : 3,
 		"category_scroll" : 11,
+		"item_scroll" : 12,
 		"back_btn" : 21,
 		"next_btn" : 22,
 	]
 
 	var CONST_BODY_BACK = "back.png"
 	var CONST_BODY_NEXT = "next.png"
-	
 	
 	var CONST_VIEWS_HEIGHT : [String:CGFloat] = ["Header":64, "Body":0,"Footer":1]
 
@@ -46,21 +47,17 @@ class SelectItemsViewModel: NSObject {
 	
 	public var item_back_btn : UIButton!
 	public var item_next_btn : UIButton!
-	public var item_page : UILabel!
-	public var item_detail_view : UIView!
-	
-	public var myScrollView : UIScrollView!
-	public var myPageSize : Int!
+	public var item_scroll : UIScrollView!
 	
 	override init() {
 	}
 
-	init(_size:CGSize, _navHeight:CGFloat, _staHeight:CGFloat, _segcon: Int){
+	init(_size:CGSize, _navHeight:CGFloat, _staHeight:CGFloat){
 		self.CONST_FRAMESIZE = _size
 		self.CONST_NAVIGATIONBAR_HEIGHT = _navHeight + 20
 		self.CONST_STATUSBAR_HEIGHT = _staHeight + 30
 		self.CONST_VIEWS_HEIGHT["Body"] = CONST_FRAMESIZE.height - self.CONST_NAVIGATIONBAR_HEIGHT - self.CONST_STATUSBAR_HEIGHT - self.CONST_VIEWS_HEIGHT["Header"]! - self.CONST_VIEWS_HEIGHT["Footer"]!
-		self.CONST_BG = shareController.convHex2Color(_hexStr: "F5ECCE", _alpha:1)
+		self.CONST_BG = shareController.convHex2Color(_hexStr: self.CONST_BG_HEX, _alpha:1)
 	}
 	
 	func getHeaderView() -> UIView{
@@ -122,17 +119,12 @@ class SelectItemsViewModel: NSObject {
 	}
 	
 	func makeCenterView(width: CGFloat, height : CGFloat) -> UIView{
-		let _centerView : UIView = UIView(frame: CGRect(x: 36, y: 0, width: width - 36 - 36, height: height))
-		self.item_detail_view = UIView(frame: CGRect(x: 16, y: 16, width: _centerView.frame.size.width - 32, height: _centerView.frame.size.height - 32))
-		self.item_detail_view.backgroundColor = UIColor.white
-		_centerView.addSubview(self.item_detail_view)
-		
-		self.item_page = UILabel(frame: CGRect(x: self.item_detail_view.frame.size.width - 36, y: -2, width: 48, height: 20))
-		self.item_page.text = "nil"
-		self.item_page.textAlignment = .left
-		self.item_page.font = UIFont.systemFont(ofSize: 14)
-		_centerView.addSubview(self.item_page)
-		return _centerView
+		self.item_scroll = UIScrollView(frame: CGRect(x: 36, y: 0, width: width - 36 - 36, height: height))
+		self.item_scroll.tag = CONST_TAGS["item_scroll"]!
+		self.item_scroll.backgroundColor = UIColor.clear
+		self.item_scroll.isPagingEnabled = true
+		self.item_scroll.bounces = true
+		return item_scroll
 	}
 	
 	func makeRightView(width: CGFloat, height : CGFloat) -> UIView{
