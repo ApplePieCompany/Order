@@ -15,13 +15,25 @@ class SelectItemsViewController: UIViewController, UIScrollViewDelegate{
 	
 	var CONST_TAG = 12
 	var CONST_FRAMESIZE : CGSize!
-	var CONST_SEGCON : NSArray = ["丼","定食", "洋食","一品料理"]
+	var CONST_SEGCON : [Int:String] = [
+	101:"丼",
+	102:"定食",
+	103:"洋食",
+	104:"一品料理"
+	]
+
+	var CONST_CATEGORY_WIDTH = 124
+	var CONST_CATEGORY_TAG_BASE = 101
 	
 	public var myCalender : Date!
 	
 	var _headerView : UIView!
 	var _bodyView : UIView!
 	var _footerView : UIView!
+	
+	var _category_idx : Int!
+	var _item_list : [ItemModel] = []
+	var _item_idx : Int!
 	
 	var _itemSegcon : Int!
 	var _itemCount = 0
@@ -59,16 +71,24 @@ class SelectItemsViewController: UIViewController, UIScrollViewDelegate{
 		self.view.addSubview(selectItemsViewModel.getBodyView())
 		self.view.addSubview(selectItemsViewModel.getFooterView())
 		
+		selectItemsViewModel.sort_btn.addTarget(self, action: #selector(onClickMyButton(sender:)), for: .touchUpInside)
 		selectItemsViewModel.search_btn.addTarget(self, action: #selector(onClickMyButton(sender:)), for: .touchUpInside)
 		selectItemsViewModel.cart_btn.addTarget(self, action: #selector(onClickMyButton(sender:)), for: .touchUpInside)
+
+		selectItemsViewModel.item_back_btn.addTarget(self, action: #selector(onClickMyButton(sender:)), for: .touchUpInside)
+		selectItemsViewModel.item_next_btn.addTarget(self, action: #selector(onClickMyButton(sender:)), for: .touchUpInside)
+		
 		//		selectItemsViewModel.segcon.addTarget(self, action: #selector(self.segconChanged(segcon:)), for: UIControlEvents.valueChanged)
 		
 		selectItemsViewModel.category_scroll.delegate = self
 		//		selectItemsViewModel.myScrollView.delegate = self
 		
 		self.getCategoryList()
-		selectItemsViewModel.category_scroll.viewWithTag(101)?.backgroundColor = UIColor.orange
-		self.getItemList()
+		self._category_idx = 101
+		selectItemsViewModel.category_scroll.viewWithTag(self._category_idx)?.backgroundColor = UIColor.orange
+		self.makeItemList()
+
+		self.showItem()
 	}
 	
 	override func didReceiveMemoryWarning() {
@@ -77,15 +97,14 @@ class SelectItemsViewController: UIViewController, UIScrollViewDelegate{
 	}
 
 	func getCategoryList(){
-		let _BASEWIDTH = 122
 		var _BASETAG = 101
 		
 		for j in 0 ..< self.CONST_SEGCON.count {
-			let _x = j * _BASEWIDTH + 4
-			let _button : UIButton = UIButton(frame: CGRect(x: _x, y: 0, width: _BASEWIDTH - 4, height: 20))
+			let _x = j * self.CONST_CATEGORY_WIDTH + 4
+			let _button : UIButton = UIButton(frame: CGRect(x: _x, y: 0, width: self.CONST_CATEGORY_WIDTH - 4, height: 20))
 			_button.tag = _BASETAG
 			_button.backgroundColor = UIColor.lightGray
-			_button.setTitle(self.CONST_SEGCON[j] as? String, for: .normal)
+			_button.setTitle(self.CONST_SEGCON[_BASETAG], for: .normal)
 			_button.setTitleColor(UIColor.white, for: .normal)
 			_button.titleLabel?.font = UIFont.systemFont(ofSize: 14)
 			_button.titleLabel?.textAlignment = .center
@@ -97,7 +116,28 @@ class SelectItemsViewController: UIViewController, UIScrollViewDelegate{
 		}
 	}
 	
-	func getItemList(){
+	func makeItemList(){
+		self._item_idx = 0
+		
+		let _ItemModels : ItemModels = ItemModels()
+		self._item_list = _ItemModels.makeList(_category: self._category_idx - 101)
+	}
+	
+	func showItem(){
+		let subviews = selectItemsViewModel.item_detail_view.subviews
+		for subview in subviews { subview.removeFromSuperview() }
+		
+		let _width = selectItemsViewModel.item_detail_view.frame.size.width - 8
+		let _height = _width
+
+		let _imageView : UIImageView = UIImageView(frame: CGRect(x: 4, y: 0, width: _width, height: _height))
+		_imageView.contentMode = .scaleAspectFit
+		_imageView.image = self._item_list[self._item_idx].photo
+		selectItemsViewModel.item_detail_view.addSubview(_imageView)
+		
+		selectItemsViewModel.item_page.text = "\(self._item_idx! + 1) / \(self._item_list.count)"
+		selectItemsViewModel.item_page.sizeToFit()
+		
 		/*
 		let itemModels : ItemModels = ItemModels()
 		let _itemModels : [ItemModel] = itemModels.getItems(_category: self._itemSegcon, _current: 0)
@@ -122,6 +162,7 @@ class SelectItemsViewController: UIViewController, UIScrollViewDelegate{
 		*/
 	}
 	
+	
 	/*
 	// MARK: - Navigation
 	
@@ -135,16 +176,24 @@ class SelectItemsViewController: UIViewController, UIScrollViewDelegate{
 	/* ヘッダボタン処理 */
 	internal func onClickMyButton(sender: UIButton){
 		switch(sender.tag){
-		case 1 , 2:
+		case selectItemsViewModel.CONST_TAGS["sort_btn"]!:
+			selectItemsViewModel.sort_btn_IDX = selectItemsViewModel.sort_btn_IDX == 0 ? 1: 0
+			selectItemsViewModel.sort_btn.setImage(UIImage(named: selectItemsViewModel.CONST_HEADER_SORT[selectItemsViewModel.sort_btn_IDX])!, for: .normal)
+			
+		case selectItemsViewModel.CONST_TAGS["search_btn"]! , selectItemsViewModel.CONST_TAGS["cart_btn"]!:
 			print(sender.tag)
-
+			
 		case 101 ,102, 103, 104:
-			for i in 101...104{
-				let _temp = selectItemsViewModel.category_scroll.viewWithTag(i)
-				_temp?.backgroundColor = UIColor.lightGray
-			}
-			let _target = selectItemsViewModel.category_scroll.viewWithTag(sender.tag)
-			_target?.backgroundColor = UIColor.orange
+			for i in 101...104{ selectItemsViewModel.category_scroll.viewWithTag(i)?.backgroundColor = UIColor.lightGray }
+			selectItemsViewModel.category_scroll.viewWithTag(sender.tag)?.backgroundColor = UIColor.orange
+
+		case selectItemsViewModel.CONST_TAGS["back_btn"]!:
+			self._item_idx = self._item_idx - 1 < 0 ? 0 :self._item_idx - 1
+			self.showItem()
+
+		case selectItemsViewModel.CONST_TAGS["next_btn"]!:
+			self._item_idx = self._item_idx + 1 >= self._item_list.count ? self._item_list.count - 1: self._item_idx + 1
+			self.showItem()
 			
 		default:print("error")
 		}
@@ -166,10 +215,7 @@ class SelectItemsViewController: UIViewController, UIScrollViewDelegate{
 	
 	/* DELEGATE */
 	func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
-		if(scrollView.tag==1){
-			scrollView.contentOffset.x = CGFloat(Int(scrollView.contentOffset.x / 375) * 360)
-			
-			//			print("CONTENT OFFSET IS \(scrollView.contentOffset.x)")
+		if(scrollView.tag == selectItemsViewModel.CONST_TAGS["category_scroll"]!){
 		}
 	}
 

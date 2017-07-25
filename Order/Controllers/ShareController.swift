@@ -11,10 +11,10 @@ import UIKit
 class ShareController: NSObject {
 	
 	enum EnumTitle : String{
-		case Order = "注文画面"
-		case History = "注文履歴画面"
-		case Select = "商品注文画面"
-		case Conf = "設定画面"
+		case Order = "配送日選択"
+		case History = "注文履歴"
+		case Select = "商品選択"
+		case Conf = "利用者登録"
 	}
 	
 	//タイトル取得
