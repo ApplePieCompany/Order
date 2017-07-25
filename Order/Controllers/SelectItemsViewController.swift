@@ -24,6 +24,7 @@ class SelectItemsViewController: UIViewController, UIScrollViewDelegate{
 
 	var CONST_CATEGORY_WIDTH = 124
 	var CONST_CATEGORY_TAG_BASE = 101
+	var CONST_ITEMS_X : [String:CGFloat] = ["Label":8, "Value":75]
 	
 	public var myCalender : Date!
 	
@@ -87,8 +88,6 @@ class SelectItemsViewController: UIViewController, UIScrollViewDelegate{
 		self._category_idx = 101
 		selectItemsViewModel.category_scroll.viewWithTag(self._category_idx)?.backgroundColor = UIColor.orange
 		self.makeItemList()
-
-		self.showItem()
 	}
 	
 	override func didReceiveMemoryWarning() {
@@ -121,6 +120,8 @@ class SelectItemsViewController: UIViewController, UIScrollViewDelegate{
 		
 		let _ItemModels : ItemModels = ItemModels()
 		self._item_list = _ItemModels.makeList(_category: self._category_idx - 101)
+		
+		self.showItem()
 	}
 	
 	func showItem(){
@@ -129,39 +130,46 @@ class SelectItemsViewController: UIViewController, UIScrollViewDelegate{
 		
 		let _width = selectItemsViewModel.item_detail_view.frame.size.width - 8
 		let _height = _width
-
-		let _imageView : UIImageView = UIImageView(frame: CGRect(x: 4, y: 0, width: _width, height: _height))
-		_imageView.contentMode = .scaleAspectFit
-		_imageView.image = self._item_list[self._item_idx].photo
+		
+		let _imageView : UIImageView = UIImageView(frame: CGRect(x: 4, y: 4, width: _width, height: _height))
+		_imageView.contentMode = .top
+		_imageView.clipsToBounds = true
+		_imageView.image =  shareController.resizeImage(_image: self._item_list[self._item_idx].photo, _size: CGSize(width: _width, height: _height))
+		_imageView.frame = CGRect(x: 4, y: 4, width: _width, height: (_imageView.image?.size.height)!)
 		selectItemsViewModel.item_detail_view.addSubview(_imageView)
 		
-		selectItemsViewModel.item_page.text = "\(self._item_idx! + 1) / \(self._item_list.count)"
-		selectItemsViewModel.item_page.sizeToFit()
-		
-		/*
-		let itemModels : ItemModels = ItemModels()
-		let _itemModels : [ItemModel] = itemModels.getItems(_category: self._itemSegcon, _current: 0)
-		let width = self.CONST_FRAMESIZE.width
-		let height = self.CONST_FRAMESIZE.height
-		
-		let subviews = selectItemsViewModel.myScrollView.subviews
-		for subview in subviews { subview.removeFromSuperview() }
+		var _y = 4 + _imageView.frame.height + 8
 
-		for i in 0 ..< _itemModels.count {
-			let myLabel:UILabel = UILabel(frame: CGRect(x: CGFloat(i) * width + width/2 - 40, y: height/2 - 40, width: 80, height: 80))
-			myLabel.backgroundColor = UIColor.black
-			myLabel.textColor = UIColor.white
-			myLabel.textAlignment = NSTextAlignment.center
-			myLabel.layer.masksToBounds = true
-			myLabel.text = "Page\(i)"
-			myLabel.font = UIFont.systemFont(ofSize: UIFont.smallSystemFontSize)
-			myLabel.layer.cornerRadius = 40.0
-			
-			selectItemsViewModel.myScrollView.addSubview(myLabel)
-		}
-		*/
+		let _name : UIView = self.getItemName(_width: _width, _y: _y, _label:"商品名", _val:"\(self._item_list[self._item_idx].name!)")
+		selectItemsViewModel.item_detail_view.addSubview(_name)
+		
+		_y += (_name.frame.height + 8)
+		let _tanka : UIView = self.getItemName(_width: _width, _y: _y, _label:"単　価", _val:"\(self._item_list[self._item_idx].tanka!)円")
+		selectItemsViewModel.item_detail_view.addSubview(_tanka)
+		
+		selectItemsViewModel.item_page.text = "\(self._item_idx! + 1) / \(self._item_list.count)"
 	}
 	
+	func getItemName(_width: CGFloat, _y: CGFloat, _label:String, _val:String) -> UIView{
+		let _return : UIView = UIView(frame: CGRect(x: 0, y: 0, width: _width, height: 20))
+		
+		let _label : UILabel = UILabel(frame: CGRect(x: CONST_ITEMS_X["Label"]!, y: _y, width: _width, height: 30))
+		_label.text = "\(_label)："
+		_label.sizeToFit()
+		_return.addSubview(_label)
+		
+		let _val : UILabel = UILabel(frame: CGRect(x: CONST_ITEMS_X["Value"]!, y: _y, width: _width, height: 30))
+		_val.text = "\(_val)"
+		_val.numberOfLines = 0
+		_val.sizeToFit()
+		_return.addSubview(_val)
+
+		let _maxW = max(_label.frame.width, _val.frame.width)
+		let _maxH = max(_label.frame.height, _val.frame.height)
+		_return.frame = CGRect(x: 0, y: 0, width: _maxW, height: _maxH)
+		
+		return _return
+	}
 	
 	/*
 	// MARK: - Navigation
@@ -186,6 +194,9 @@ class SelectItemsViewController: UIViewController, UIScrollViewDelegate{
 		case 101 ,102, 103, 104:
 			for i in 101...104{ selectItemsViewModel.category_scroll.viewWithTag(i)?.backgroundColor = UIColor.lightGray }
 			selectItemsViewModel.category_scroll.viewWithTag(sender.tag)?.backgroundColor = UIColor.orange
+			
+			self._category_idx = sender.tag
+			self.makeItemList()
 
 		case selectItemsViewModel.CONST_TAGS["back_btn"]!:
 			self._item_idx = self._item_idx - 1 < 0 ? 0 :self._item_idx - 1
@@ -199,21 +210,10 @@ class SelectItemsViewController: UIViewController, UIScrollViewDelegate{
 		}
 	}
 
-	//ヘッダセグコン処理
-	internal func segconChanged(segcon: UISegmentedControl){
-		switch segcon.selectedSegmentIndex {
-		case 0, 1:
-			self._itemCount = 0
-			print(segcon.selectedSegmentIndex)
-			
-		default:
-			print("Error")
-		}
-	}
 	
-	
-	
+	/*          */
 	/* DELEGATE */
+	/*          */
 	func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
 		if(scrollView.tag == selectItemsViewModel.CONST_TAGS["category_scroll"]!){
 		}

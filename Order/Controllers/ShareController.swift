@@ -179,9 +179,14 @@ class ShareController: NSObject {
 	func convHex2Color(_hexStr : NSString, _alpha : CGFloat) -> UIColor{
 		return UIColor.hexStr(hexStr:_hexStr, alpha:_alpha)
 	}
+	
+	//RESIZE IMAGE
+	func resizeImage(_image: UIImage, _size: CGSize) -> UIImage{
+		return _image.resize(size: _size)
+	}
 }
 
-//EXTENSION UICOLOR
+//EXTENSION
 extension UIColor {
 	class func hexStr ( hexStr : NSString, alpha : CGFloat) -> UIColor {
 		var hexStr = hexStr
@@ -198,5 +203,21 @@ extension UIColor {
 			print("invalid hex string")
 			return UIColor.white;
 		}
+	}
+}
+
+extension UIImage {
+	
+	func resize(size: CGSize) -> UIImage {
+		let widthRatio = size.width / self.size.width
+		let heightRatio = size.height / self.size.height
+		let ratio = (widthRatio < heightRatio) ? widthRatio : heightRatio
+		let resizedSize = CGSize(width: (self.size.width * ratio), height: (self.size.height * ratio))
+		// 画質を落とさないように以下を修正
+		UIGraphicsBeginImageContextWithOptions(resizedSize, false, 0.0)
+		draw(in: CGRect(x: 0, y: 0, width: resizedSize.width, height: resizedSize.height))
+		let resizedImage = UIGraphicsGetImageFromCurrentImageContext()
+		UIGraphicsEndImageContext()
+		return resizedImage!
 	}
 }

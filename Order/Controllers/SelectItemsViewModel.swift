@@ -104,73 +104,45 @@ class SelectItemsViewModel: NSObject {
 		let width = _return.frame.maxX
 		let height = CONST_VIEWS_HEIGHT["Body"]
 		
-		let _leftView : UIView = UIView(frame: CGRect(x: 0, y: 0, width: 36, height: height!))
+		_return.addSubview(makeCenterView(width: width,height: height!))
+		_return.addSubview(makeLeftView(height:height!))
+		_return.addSubview(makeRightView(width: width,height: height!))
+		
+		return _return
+	}
+	
+	func makeLeftView(height : CGFloat) -> UIView{
+		let _leftView : UIView = UIView(frame: CGRect(x: 0, y: 0, width: 36, height: height))
 		self.item_back_btn = UIButton(frame: CGRect(x: 2, y: CONST_VIEWS_HEIGHT["Body"]! / 2 - 16, width: 32, height: 32))
 		let _backImage : UIImage = UIImage(named: self.CONST_BODY_BACK)!
 		self.item_back_btn.setImage(_backImage, for: .normal)
 		self.item_back_btn.tag = self.CONST_TAGS["back_btn"]!
 		_leftView.addSubview(self.item_back_btn)
-
-		
-		let _centerView : UIView = UIView(frame: CGRect(x: 36, y: 0, width: width - 36 - 36, height: height!))
+		return _leftView
+	}
+	
+	func makeCenterView(width: CGFloat, height : CGFloat) -> UIView{
+		let _centerView : UIView = UIView(frame: CGRect(x: 36, y: 0, width: width - 36 - 36, height: height))
 		self.item_detail_view = UIView(frame: CGRect(x: 16, y: 16, width: _centerView.frame.size.width - 32, height: _centerView.frame.size.height - 32))
 		self.item_detail_view.backgroundColor = UIColor.white
 		_centerView.addSubview(self.item_detail_view)
 		
-		self.item_page = UILabel(frame: CGRect(x: self.item_detail_view.frame.size.width - 24, y: 16, width: self.item_detail_view.frame.size.width, height: 20))
+		self.item_page = UILabel(frame: CGRect(x: self.item_detail_view.frame.size.width - 36, y: -2, width: 48, height: 20))
 		self.item_page.text = "nil"
-		self.item_page.textAlignment = .right
+		self.item_page.textAlignment = .left
 		self.item_page.font = UIFont.systemFont(ofSize: 14)
 		_centerView.addSubview(self.item_page)
-		
-
-		let _rightView : UIView = UIView(frame: CGRect(x: width - 36, y: 0, width: 32, height: height!))
+		return _centerView
+	}
+	
+	func makeRightView(width: CGFloat, height : CGFloat) -> UIView{
+		let _rightView : UIView = UIView(frame: CGRect(x: width - 36, y: 0, width: 32, height: height))
 		self.item_next_btn = UIButton(frame: CGRect(x: 2, y: CONST_VIEWS_HEIGHT["Body"]! / 2 - 16, width: 32, height: 32))
 		let _nextImage : UIImage = UIImage(named: self.CONST_BODY_NEXT)!
 		self.item_next_btn.setImage(_nextImage, for: .normal)
 		self.item_next_btn.tag = self.CONST_TAGS["next_btn"]!
 		_rightView.addSubview(self.item_next_btn)
-
-		_return.addSubview(_centerView)
-		_return.addSubview(_leftView)
-		_return.addSubview(_rightView)
-		
-		/*
-		myScrollView = UIScrollView(frame: CGRect(x: 0, y: CONST_VIEWS_HEIGHT["Header"]!, width: CONST_FRAMESIZE.width, height: CONST_VIEWS_HEIGHT["Body"]!))
-		myScrollView.showsHorizontalScrollIndicator = false;
-		myScrollView.showsVerticalScrollIndicator = false
-		myScrollView.isPagingEnabled = true
-		myScrollView.contentSize = CGSize(width: CGFloat(self.myPageSize) * width, height: 0)
-		_return.addSubview(myScrollView)
-		*/
-		
-		// ページ数分ボタンを生成する.
-		/*
-		for i in 0 ..< self.myPageSize {
-			let myLabel:UILabel = UILabel(frame: CGRect(x: CGFloat(i) * width + width/2 - 40, y: height/2 - 40, width: 80, height: 80))
-			myLabel.backgroundColor = UIColor.black
-			myLabel.textColor = UIColor.white
-			myLabel.textAlignment = NSTextAlignment.center
-			myLabel.layer.masksToBounds = true
-			myLabel.text = "Page\(i)"
-			myLabel.font = UIFont.systemFont(ofSize: UIFont.smallSystemFontSize)
-			myLabel.layer.cornerRadius = 40.0
-			
-			myScrollView.addSubview(myLabel)
-		}
-		*/
-		
-		// PageControlを作成する.
-/*
-		myPagecontrol = UIPageControl(frame: CGRect(x:0, y:0, width:width, height:24))
-		myPagecontrol.backgroundColor = self.CONST_BG
-		myPagecontrol.numberOfPages = self.myPageSize
-		myPagecontrol.currentPage = 0
-		myPagecontrol.isUserInteractionEnabled = false
-		_return.addSubview(myPagecontrol)
-*/
-
-		return _return
+		return _rightView
 	}
 	
 	func getFooterView() -> UIView{
