@@ -308,6 +308,7 @@ class OrderViewController: UIViewController, UICollectionViewDataSource, UIColle
 			self.navigationController?.pushViewController(_HistoryViewController, animated: true)
 
 		case 1:
+			appDelegate.orderList = []
 			let _SelectItemsViewController : SelectItemsViewController = SelectItemsViewController()
 			self.navigationController?.pushViewController(_SelectItemsViewController, animated: true)
 

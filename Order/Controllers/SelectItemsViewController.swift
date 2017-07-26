@@ -41,6 +41,7 @@ class SelectItemsViewController: UIViewController, UIScrollViewDelegate{
 	
 	var _category_idx : Int!
 	var _item_list : [ItemModel] = []
+	var _order_list : [OrderModel] = []
 	
 	init() {
 		super.init(nibName: nil, bundle: nil)
@@ -64,6 +65,7 @@ class SelectItemsViewController: UIViewController, UIScrollViewDelegate{
 
 		let appDelegate:AppDelegate = UIApplication.shared.delegate as! AppDelegate
 		self.myCalender = appDelegate.targetDate
+		self._order_list = appDelegate.orderList
 
 		self.CONST_FRAMESIZE = CGSize(width: self.view.frame.width, height: self.view.frame.height)
 		let _navHeight = self.navigationController?.navigationBar.frame.size.height
@@ -123,6 +125,7 @@ class SelectItemsViewController: UIViewController, UIScrollViewDelegate{
 
 		selectItemsViewModel.item_scroll.contentSize = CGSize(width:selectItemsViewModel.item_scroll.frame.width * CGFloat(self._item_list.count) , height:0)
 		selectItemsViewModel.item_scroll.contentOffset.x = 0
+		self.setEnableButton(_val: selectItemsViewModel.item_scroll.contentOffset.x)
 		
 		self.showItem()
 	}
@@ -131,49 +134,57 @@ class SelectItemsViewController: UIViewController, UIScrollViewDelegate{
 		let subviews = selectItemsViewModel.item_scroll.subviews
 		for subview in subviews { subview.removeFromSuperview() }
 		
-		for i in 0..<self._item_list.count{
-			let _span = CONST_CONTENTOFFSET_WIDTH * CGFloat(i)
+		for i in 0..<self._item_list.count{ selectItemsViewModel.item_scroll.addSubview(self.makeItemPages(_span: CONST_CONTENTOFFSET_WIDTH * CGFloat(i), i: i)) }
+	}
+	
+	func makeItemPages(_span: CGFloat, i: Int) -> UIView{
+		let _return = UIView(frame: CGRect(x: 16 + _span, y: 16, width: selectItemsViewModel.item_scroll.frame.size.width - 32, height: selectItemsViewModel.item_scroll.frame.size.height - 32))
+		_return.backgroundColor = UIColor.white
+		
+		let _width = _return.frame.size.width - 8
+		let _height = _width
+		
+		let _item_page = UILabel(frame: CGRect(x: _return.frame.size.width - 36, y: -16, width: 48, height: 20))
+		_item_page.text = "nil"
+		_item_page.textAlignment = .left
+		_item_page.font = UIFont.systemFont(ofSize: 14)
+		_item_page.text = "\(i + 1) / \(self._item_list.count)"
+		_return.addSubview(_item_page)
+		
+		let _imageView : UIImageView = UIImageView(frame: CGRect(x: 4 + _span, y: 4, width: _width, height: _height))
+		_imageView.contentMode = .top
+		_imageView.clipsToBounds = true
+		_imageView.image =  shareController.resizeImage(_image: self._item_list[i].photo, _size: CGSize(width: _width, height: _height))
+		_imageView.frame = CGRect(x: 4, y: 4, width: _width, height: (_imageView.image?.size.height)!)
+		_return.addSubview(_imageView)
+		
+		var _y = 4 + _imageView.frame.height + 8
+		let _mask_y = _y
+		
+		let _name : UIView = self.getItemInfo(_width: _width, _y: _y, _labelArg:"商品名", _valArg:"\(self._item_list[i].name!)", _span:_span)
+		_return.addSubview(_name)
+		
+		_y += (_name.frame.height + 8)
+		let _tanka : UIView = self.getItemInfo(_width: _width, _y: _y, _labelArg:"税込み", _valArg:"\(self._item_list[i].tanka!)円", _span:_span)
+		_return.addSubview(_tanka)
+		
+		_y += (_tanka.frame.height + 8)
+		let Ingredient : UIView = self.getItemInfo(_width: _width, _y: _y, _labelArg:"原材料", _valArg:"", _span:_span, _isIngradient : true, _Ingradient :self._item_list[i].ingradient)
+		_return.addSubview(Ingredient)
+		
+		_y += (Ingredient.frame.height + 10)
+		let _English : UIView = self.getItemInfo(_width: _width, _y: _y, _labelArg:"英語名", _valArg:"\(self._item_list[i].bilingual.english!)\n(\(shareController.convertYen2(num: self._item_list[i].tanka)))", _span:_span)
+		_return.addSubview(_English)
+		
+		let _footerView : UIView = getFooter(_width: _width, i: i)
+		_return.addSubview(_footerView)
 
-			let item_detail_view = UIView(frame: CGRect(x: 16 + _span, y: 16, width: selectItemsViewModel.item_scroll.frame.size.width - 32, height: selectItemsViewModel.item_scroll.frame.size.height - 32))
-			item_detail_view.backgroundColor = UIColor.white
-			
-			let _width = item_detail_view.frame.size.width - 8
-			let _height = _width
-			
-			let _item_page = UILabel(frame: CGRect(x: item_detail_view.frame.size.width - 36, y: -16, width: 48, height: 20))
-			_item_page.text = "nil"
-			_item_page.textAlignment = .left
-			_item_page.font = UIFont.systemFont(ofSize: 14)
-			_item_page.text = "\(i + 1) / \(self._item_list.count)"
-			item_detail_view.addSubview(_item_page)
-			
-			let _imageView : UIImageView = UIImageView(frame: CGRect(x: 4 + _span, y: 4, width: _width, height: _height))
-			_imageView.contentMode = .top
-			_imageView.clipsToBounds = true
-			_imageView.image =  shareController.resizeImage(_image: self._item_list[i].photo, _size: CGSize(width: _width, height: _height))
-			_imageView.frame = CGRect(x: 4, y: 4, width: _width, height: (_imageView.image?.size.height)!)
-			item_detail_view.addSubview(_imageView)
-			
-			var _y = 4 + _imageView.frame.height + 8
-			let _name : UIView = self.getItemInfo(_width: _width, _y: _y, _labelArg:"商品名", _valArg:"\(self._item_list[i].name!)", _span:_span)
-			item_detail_view.addSubview(_name)
-			
-			_y += (_name.frame.height + 8)
-			let _tanka : UIView = self.getItemInfo(_width: _width, _y: _y, _labelArg:"税込み", _valArg:"\(self._item_list[i].tanka!)円", _span:_span)
-			item_detail_view.addSubview(_tanka)
-			
-			_y += (_tanka.frame.height + 8)
-			let Ingredient : UIView = self.getItemInfo(_width: _width, _y: _y, _labelArg:"原材料", _valArg:"", _span:_span, _isIngradient : true, _Ingradient :self._item_list[i].ingradient)
-			item_detail_view.addSubview(Ingredient)
-
-			_y += (Ingredient.frame.height + 10)
-			let _English : UIView = self.getItemInfo(_width: _width, _y: _y, _labelArg:"英語名", _valArg:"\(self._item_list[i].bilingual.english!)\n(\(shareController.convertYen2(num: self._item_list[i].tanka)))", _span:_span)
-			item_detail_view.addSubview(_English)
-			
-			item_detail_view.addSubview(getFooter(_width: _width, i: i))
-
-			selectItemsViewModel.item_scroll.addSubview(item_detail_view)
-		}
+		let _maskView : UIView = UIView(frame: CGRect(x: 0, y: _mask_y, width: _width + 8, height: _return.frame.height - _imageView.frame.height - _footerView.frame.height - 14))
+		_maskView.tag = 501 + i
+		_maskView.backgroundColor = UIColor.clear
+		_return.addSubview(_maskView)
+		
+		return _return
 	}
 	
 	func getItemInfo(_width: CGFloat, _y: CGFloat, _labelArg:String, _valArg:String, _span:CGFloat, _isIngradient : Bool = false, _Ingradient : Ingradient = Ingradient()) -> UIView{
@@ -265,14 +276,38 @@ class SelectItemsViewController: UIViewController, UIScrollViewDelegate{
 		
 		let _cartBtn : UIButton = UIButton(frame: CGRect(x: _return.frame.width - 65, y: 2, width: 62, height: 29))
 		_cartBtn.tag = 401 + i
-		_cartBtn.backgroundColor = UIColor.red
+		_cartBtn.backgroundColor = UIColor.lightGray
 		_cartBtn.setTitle("買い物かごに\n入れる", for: .normal)
 		_cartBtn.titleLabel?.font = UIFont.systemFont(ofSize: 9)
 		_cartBtn.titleLabel?.textAlignment = .center
 		_cartBtn.titleLabel?.numberOfLines = 2
+		_cartBtn.isEnabled = false
 		_cartBtn.addTarget(self, action: #selector(onClickMyButton(sender:)), for: .touchUpInside)
 		
 		_return.addSubview(_cartBtn)
+		return _return
+	}
+	
+	func setEnableButton(_val : CGFloat){
+		let _max : CGFloat = CONST_CONTENTOFFSET_WIDTH * CGFloat( self._item_list.count - 1)
+
+		if(_val == 0){ selectItemsViewModel.item_back_btn.isEnabled = false }
+		else{ selectItemsViewModel.item_back_btn.isEnabled = true }
+		
+		if(_val == _max){ selectItemsViewModel.item_next_btn.isEnabled = false }
+		else{ selectItemsViewModel.item_next_btn.isEnabled = true }
+	}
+	
+	func IsOrder(_code: String) -> Bool{
+		var _return : Bool = false
+		
+		for order in self._order_list{
+			if(order.OrderYMD == self.myCalender && order.Code == _code){
+				_return = true
+				break
+			}
+		}
+		
 		return _return
 	}
 	
@@ -304,7 +339,19 @@ class SelectItemsViewController: UIViewController, UIScrollViewDelegate{
 			self.makeItemList()
 
 		case 401..<500:
-			print("HI")
+			let _tag = sender.tag - 100
+			let _target : UIStepper = selectItemsViewModel.item_scroll.viewWithTag(_tag) as! UIStepper
+			let _order : OrderModel = OrderModel(_OrderYMD: self.myCalender, _Code: self._item_list[sender.tag - 401].code, _Name: self._item_list[sender.tag - 401].name, _Count: Int(_target.value), _Tanka: self._item_list[sender.tag - 401].tanka)
+			self._order_list.append(_order)
+			
+			let _alreadyTag = sender.tag + 100
+			let _approveImageView : UIImageView = UIImageView(frame: CGRect(x: 0, y: 0, width: 256, height: 256))
+			_approveImageView.image = UIImage(named: "approved.png")
+			_approveImageView.contentMode = .scaleAspectFit
+			_approveImageView.clipsToBounds = true
+			selectItemsViewModel.item_scroll.viewWithTag(_alreadyTag)!.backgroundColor = UIColor.white.withAlphaComponent(0.75)
+			selectItemsViewModel.item_scroll.viewWithTag(_alreadyTag)!.addSubview(_approveImageView)
+
 			
 		case selectItemsViewModel.CONST_TAGS["back_btn"]!, selectItemsViewModel.CONST_TAGS["next_btn"]!:
 			var _pos : CGPoint = CGPoint(x: 0, y: 0)
@@ -321,6 +368,8 @@ class SelectItemsViewController: UIViewController, UIScrollViewDelegate{
 			_pos.x = CGFloat(Int(_pos.x / CONST_CONTENTOFFSET_WIDTH) * Int(CONST_CONTENTOFFSET_WIDTH))
 			selectItemsViewModel.item_scroll.setContentOffset(_pos, animated: true)
 			
+			self.setEnableButton(_val: _pos.x)
+			
 		default:print("error")
 		}
 	}
@@ -329,6 +378,12 @@ class SelectItemsViewController: UIViewController, UIScrollViewDelegate{
 		let _tag = stepper.tag - 100
 		let _target : UILabel = selectItemsViewModel.item_scroll.viewWithTag(_tag) as! UILabel
 		_target.text =  String(Int(stepper.value))
+		
+		let _tuple : (Bool,UIColor) = stepper.value == 0 ? (false,UIColor.lightGray): (true,UIColor.red)
+		let _buttonTag = stepper.tag + 100
+		let _button : UIButton = selectItemsViewModel.item_scroll.viewWithTag(_buttonTag) as! UIButton
+		_button.isEnabled = _tuple.0
+		_button.backgroundColor = _tuple.1
 	}
 	
 	
@@ -344,8 +399,7 @@ class SelectItemsViewController: UIViewController, UIScrollViewDelegate{
 		if(scrollView.tag == selectItemsViewModel.CONST_TAGS["category_scroll"]!){
 		}
 		else{
-			if(scrollView.tag == selectItemsViewModel.CONST_TAGS["item_scroll"]!){
-			}
+			if(scrollView.tag == selectItemsViewModel.CONST_TAGS["item_scroll"]!){ self.setEnableButton(_val: scrollView.contentOffset.x) }
 		}
 	}
 }

@@ -70,7 +70,7 @@ class Bilingual{
 	}
 	
 	init(){
-		self.english = "English name is ..."; self.korean = "Korrean name is ..."; self.chinese = "Chinese name is ..."
+		self.english = "The dish is called ..."; self.korean = "Korrean name is ..."; self.chinese = "Chinese name is ..."
 	}
 }
 

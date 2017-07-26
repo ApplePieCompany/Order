@@ -47,6 +47,7 @@
 		0AD3066D1F24222A003AE5BE /* search.png in Resources */ = {isa = PBXBuildFile; fileRef = 0AD3066C1F24222A003AE5BE /* search.png */; };
 		0AE7F8A01F1F3082009453E3 /* OrderModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AE7F89F1F1F3082009453E3 /* OrderModel.swift */; };
 		0AE7F8A21F1F4084009453E3 /* HistoryViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AE7F8A11F1F4084009453E3 /* HistoryViewModel.swift */; };
+		0AEF164B1F28726800A6CF05 /* approved.png in Resources */ = {isa = PBXBuildFile; fileRef = 0AEF164A1F28726800A6CF05 /* approved.png */; };
 		0AF13DD91F1DDCEE005D5C65 /* list.png in Resources */ = {isa = PBXBuildFile; fileRef = 0AF13DD81F1DDCEE005D5C65 /* list.png */; };
 		0AF13DDB1F1DF905005D5C65 /* HistoryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AF13DDA1F1DF905005D5C65 /* HistoryViewController.swift */; };
 /* End PBXBuildFile section */
@@ -115,6 +116,7 @@
 		0AD3066C1F24222A003AE5BE /* search.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = search.png; sourceTree = "<group>"; };
 		0AE7F89F1F1F3082009453E3 /* OrderModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OrderModel.swift; sourceTree = "<group>"; };
 		0AE7F8A11F1F4084009453E3 /* HistoryViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HistoryViewModel.swift; sourceTree = "<group>"; };
+		0AEF164A1F28726800A6CF05 /* approved.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = approved.png; sourceTree = "<group>"; };
 		0AF13DD81F1DDCEE005D5C65 /* list.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = list.png; sourceTree = "<group>"; };
 		0AF13DDA1F1DF905005D5C65 /* HistoryViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HistoryViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -234,6 +236,7 @@
 		0A125EB01F18BA0F00B9E34E /* Assets */ = {
 			isa = PBXGroup;
 			children = (
+				0AEF164A1F28726800A6CF05 /* approved.png */,
 				0A2281F71F281CB900E8D22D /* egg.png */,
 				0A2281F81F281CB900E8D22D /* rice.png */,
 				0A2281F91F281CB900E8D22D /* pork.png */,
@@ -404,6 +407,7 @@
 				0A125E851F18B88100B9E34E /* Assets.xcassets in Resources */,
 				0AC51AF81F25DE060063E826 /* back.png in Resources */,
 				0AC51AF51F25D3420063E826 /* sort1.png in Resources */,
+				0AEF164B1F28726800A6CF05 /* approved.png in Resources */,
 				0A125E831F18B88100B9E34E /* Main.storyboard in Resources */,
 				0A7040BC1F22D26B003BCDA6 /* 焼肉定食.jpg in Resources */,
 				0A2281FC1F281CB900E8D22D /* pork.png in Resources */,

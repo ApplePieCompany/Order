@@ -15,6 +15,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 	
 	var targetDate : Date!
 	var eventList : [Date]!
+	var orderList : [OrderModel]!
 	
 	private var myTabBarController: MainTabBarController = MainTabBarController()
 
