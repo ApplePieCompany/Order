@@ -187,16 +187,15 @@ class ShareController: NSObject {
 	
 	//通貨変換
 	func convertYen2(num : Int) -> String{
-		let _return : Double = Double(num / 110)
+		let _return =  Double(num) / Double(110.0)
 		
 		let formatter = NumberFormatter()
-		formatter.numberStyle = .currency
+		formatter.numberStyle = .decimal
 		formatter.maximumFractionDigits = 2
 		formatter.positiveFormat = "0.00"
 		formatter.roundingMode = .halfUp
-		formatter.locale = Locale(identifier: "en_US")
 
-		return formatter.string(from: _return as NSNumber)!
+		return "US$\(formatter.string(from: _return as NSNumber)!)"
 	}
 }
 

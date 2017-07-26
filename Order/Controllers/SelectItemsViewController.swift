@@ -166,12 +166,12 @@ class SelectItemsViewController: UIViewController, UIScrollViewDelegate{
 			let Ingredient : UIView = self.getItemInfo(_width: _width, _y: _y, _labelArg:"原材料", _valArg:"", _span:_span, _isIngradient : true, _Ingradient :self._item_list[i].ingradient)
 			item_detail_view.addSubview(Ingredient)
 
-			_y += (Ingredient.frame.height + 8)
+			_y += (Ingredient.frame.height + 10)
 			let _English : UIView = self.getItemInfo(_width: _width, _y: _y, _labelArg:"英語名", _valArg:"\(self._item_list[i].bilingual.english!)\n(\(shareController.convertYen2(num: self._item_list[i].tanka)))", _span:_span)
 			item_detail_view.addSubview(_English)
 			
-			
 			item_detail_view.addSubview(getFooter(_width: _width, i: i))
+
 			selectItemsViewModel.item_scroll.addSubview(item_detail_view)
 		}
 	}
@@ -181,6 +181,7 @@ class SelectItemsViewController: UIViewController, UIScrollViewDelegate{
 		
 		let _label : UILabel = UILabel(frame: CGRect(x: CONST_ITEMS_X["Label"]! , y: _y, width: _width, height: 30))
 		_label.text = "\(_labelArg)："
+		_label.numberOfLines = 0
 		_label.sizeToFit()
 		_return.addSubview(_label)
 		
