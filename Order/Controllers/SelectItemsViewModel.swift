@@ -72,11 +72,13 @@ class SelectItemsViewModel: NSObject {
 		textLabel.font = UIFont(name: "Arial", size: 16)
 		_return.addSubview(textLabel)
 		
+		/*
 		self.sort_btn = UIButton(frame: CGRect(x: CONST_FRAMESIZE.width - 16 - 60, y: 8, width: 16, height: 16))
 		self.sort_btn.tag = CONST_TAGS["sort_btn"]!
 		let _sortImage : UIImage = UIImage(named: CONST_HEADER_SORT[sort_btn_IDX])!
 		self.sort_btn.setImage(_sortImage, for: .normal)
 		_return.addSubview(self.sort_btn)
+		*/
 
 		self.search_btn = UIButton(frame: CGRect(x: CONST_FRAMESIZE.width - 16 - 16 - 16, y: 8, width: 16, height: 16))
 		self.search_btn.tag = CONST_TAGS["search_btn"]!
@@ -130,7 +132,7 @@ class SelectItemsViewModel: NSObject {
 	
 	func makeLeftView(height : CGFloat) -> UIView{
 		let _leftView : UIView = UIView(frame: CGRect(x: 0, y: 0, width: 36, height: height))
-		self.item_back_btn = UIButton(frame: CGRect(x: 2, y: CONST_VIEWS_HEIGHT["Body"]! / 2 - 16, width: 32, height: 32))
+		self.item_back_btn = UIButton(frame: CGRect(x: 4, y: CONST_VIEWS_HEIGHT["Body"]! / 2 - 16, width: 32, height: 32))
 		let _backImage : UIImage = UIImage(named: self.CONST_BODY_BACK)!
 		self.item_back_btn.setImage(_backImage, for: .normal)
 		self.item_back_btn.tag = self.CONST_TAGS["back_btn"]!
@@ -149,7 +151,7 @@ class SelectItemsViewModel: NSObject {
 	
 	func makeRightView(width: CGFloat, height : CGFloat) -> UIView{
 		let _rightView : UIView = UIView(frame: CGRect(x: width - 36, y: 0, width: 32, height: height))
-		self.item_next_btn = UIButton(frame: CGRect(x: 2, y: CONST_VIEWS_HEIGHT["Body"]! / 2 - 16, width: 32, height: 32))
+		self.item_next_btn = UIButton(frame: CGRect(x: 0, y: CONST_VIEWS_HEIGHT["Body"]! / 2 - 16, width: 32, height: 32))
 		let _nextImage : UIImage = UIImage(named: self.CONST_BODY_NEXT)!
 		self.item_next_btn.setImage(_nextImage, for: .normal)
 		self.item_next_btn.tag = self.CONST_TAGS["next_btn"]!

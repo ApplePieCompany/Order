@@ -27,6 +27,12 @@ class SelectItemsViewController: UIViewController, UIScrollViewDelegate{
 	var CONST_ITEMS_X : [String:CGFloat] = ["Label":8, "Value":75]
 	var CONST_CONTENTOFFSET_WIDTH : CGFloat!
 	
+	var CONST_INGREDIENTS : [String:UIImage] = [
+		"egg":UIImage(named: "egg.png")!,
+		"rice":UIImage(named: "rice.png")!,
+		"pork":UIImage(named: "pork.png")!,
+	]
+	
 	public var myCalender : Date!
 	
 	var _headerView : UIView!
@@ -68,7 +74,7 @@ class SelectItemsViewController: UIViewController, UIScrollViewDelegate{
 		self.view.addSubview(selectItemsViewModel.getBodyView())
 		self.view.addSubview(selectItemsViewModel.getFooterView())
 		
-		selectItemsViewModel.sort_btn.addTarget(self, action: #selector(onClickMyButton(sender:)), for: .touchUpInside)
+		//		selectItemsViewModel.sort_btn.addTarget(self, action: #selector(onClickMyButton(sender:)), for: .touchUpInside)
 		selectItemsViewModel.search_btn.addTarget(self, action: #selector(onClickMyButton(sender:)), for: .touchUpInside)
 		selectItemsViewModel.cart_btn.addTarget(self, action: #selector(onClickMyButton(sender:)), for: .touchUpInside)
 
@@ -149,58 +155,28 @@ class SelectItemsViewController: UIViewController, UIScrollViewDelegate{
 			item_detail_view.addSubview(_imageView)
 			
 			var _y = 4 + _imageView.frame.height + 8
-			let _name : UIView = self.getItemName(_width: _width, _y: _y, _labelArg:"商品名", _valArg:"\(self._item_list[i].name!)", _span:_span)
+			let _name : UIView = self.getItemInfo(_width: _width, _y: _y, _labelArg:"商品名", _valArg:"\(self._item_list[i].name!)", _span:_span)
 			item_detail_view.addSubview(_name)
 			
 			_y += (_name.frame.height + 8)
-			let _tanka : UIView = self.getItemName(_width: _width, _y: _y, _labelArg:"税込み", _valArg:"\(self._item_list[i].tanka!)円", _span:_span)
+			let _tanka : UIView = self.getItemInfo(_width: _width, _y: _y, _labelArg:"税込み", _valArg:"\(self._item_list[i].tanka!)円", _span:_span)
 			item_detail_view.addSubview(_tanka)
 			
-			let _footer : UIView = UIView(frame: CGRect(x: 0, y: selectItemsViewModel.item_scroll.frame.size.height - 96, width: selectItemsViewModel.item_scroll.frame.size.width - 32, height: 64))
-			_footer.backgroundColor = UIColor.lightGray
+			_y += (_tanka.frame.height + 8)
+			let Ingredient : UIView = self.getItemInfo(_width: _width, _y: _y, _labelArg:"原材料", _valArg:"", _span:_span, _isIngradient : true, _Ingradient :self._item_list[i].ingradient)
+			item_detail_view.addSubview(Ingredient)
+
+			_y += (Ingredient.frame.height + 8)
+			let _English : UIView = self.getItemInfo(_width: _width, _y: _y, _labelArg:"英語名", _valArg:"\(self._item_list[i].bilingual.english!)\n(\(shareController.convertYen2(num: self._item_list[i].tanka)))", _span:_span)
+			item_detail_view.addSubview(_English)
 			
-			let _countLabel : UILabel = UILabel(frame: CGRect(x: 8 , y: 6, width: _width, height: 30))
-			_countLabel.text = "数　量："
-			_countLabel.textColor = UIColor.white
-			_countLabel.sizeToFit()
-			_footer.addSubview(_countLabel)
 			
-			let _order_label : UILabel = UILabel(frame: CGRect(x: 8 + _countLabel.frame.width, y: 2, width: 30, height: 29))
-			_order_label.tag = 201 + i
-			_order_label.text = "0"
-			_order_label.backgroundColor = UIColor.white
-			_order_label.textAlignment = .center
-			_footer.addSubview(_order_label)
-			
-			let _stepper : UIStepper = UIStepper(frame: CGRect(x: 8 + _countLabel.frame.width + _order_label.frame.width + 2, y: 2, width: 21, height: 21))
-			_stepper.tag = 301 + i
-			_stepper.backgroundColor = UIColor.blue
-			_stepper.tintColor = UIColor.white
-			_stepper.minimumValue = 0
-			_stepper.maximumValue = 99
-			_stepper.value = 0
-			_stepper.autorepeat = true
-			_stepper.addTarget(self, action: #selector(self.stepperOneChanged(stepper:)), for: UIControlEvents.valueChanged)
-			_footer.addSubview(_stepper)
-			
-			let _cartBtn : UIButton = UIButton(frame: CGRect(x: _footer.frame.width - 65, y: 2, width: 62, height: 29))
-			_cartBtn.tag = 401 + i
-			_cartBtn.backgroundColor = UIColor.red
-			_cartBtn.setTitle("買い物かごに\n入れる", for: .normal)
-			_cartBtn.titleLabel?.font = UIFont.systemFont(ofSize: 9)
-			_cartBtn.titleLabel?.textAlignment = .center
-			_cartBtn.titleLabel?.numberOfLines = 2
-			_cartBtn.addTarget(self, action: #selector(onClickMyButton(sender:)), for: .touchUpInside)
-			
-			_footer.addSubview(_cartBtn)
-			
-			item_detail_view.addSubview(_footer)
-			
+			item_detail_view.addSubview(getFooter(_width: _width, i: i))
 			selectItemsViewModel.item_scroll.addSubview(item_detail_view)
 		}
 	}
 	
-	func getItemName(_width: CGFloat, _y: CGFloat, _labelArg:String, _valArg:String, _span:CGFloat) -> UIView{
+	func getItemInfo(_width: CGFloat, _y: CGFloat, _labelArg:String, _valArg:String, _span:CGFloat, _isIngradient : Bool = false, _Ingradient : Ingradient = Ingradient()) -> UIView{
 		let _return : UIView = UIView(frame: CGRect(x: 0 + _span, y: 0, width: _width, height: 20))
 		
 		let _label : UILabel = UILabel(frame: CGRect(x: CONST_ITEMS_X["Label"]! , y: _y, width: _width, height: 30))
@@ -208,16 +184,94 @@ class SelectItemsViewController: UIViewController, UIScrollViewDelegate{
 		_label.sizeToFit()
 		_return.addSubview(_label)
 		
-		let _val : UILabel = UILabel(frame: CGRect(x: CONST_ITEMS_X["Value"]! , y: _y, width: 200, height: 30))
-		_val.text = "\(_valArg)"
-		_val.numberOfLines = 0
-		_val.sizeToFit()
-		_return.addSubview(_val)
+		if(!_isIngradient){
+			let _val : UILabel = UILabel(frame: CGRect(x: CONST_ITEMS_X["Value"]! , y: _y, width: 200, height: 30))
+			_val.text = "\(_valArg)"
+			_val.numberOfLines = 0
+			_val.sizeToFit()
+			_return.addSubview(_val)
+			
+			let _maxH = max(_label.frame.height, _val.frame.height)
+			_return.frame = CGRect(x: 0, y: 0, width: _label.frame.width + _val.frame.width, height: _maxH)
+		}
+		else{
+			var _x = CONST_ITEMS_X["Value"]!
+			var _cnt : CGFloat = 0
+			
+			if(_Ingradient.egg){
+				let _EggImageView : UIImageView = UIImageView(frame: CGRect(x: _x, y: _y - 8, width: 59, height: 63))
+				_EggImageView.contentMode = .scaleAspectFit
+				_EggImageView.clipsToBounds = true
+				_EggImageView.image =  CONST_INGREDIENTS["egg"]
+				_return.addSubview(_EggImageView)
+				_x += (59 + 4)
+				_cnt += 1
+			}
 
-		let _maxW = max(_label.frame.width, _val.frame.width)
-		let _maxH = max(_label.frame.height, _val.frame.height)
-		_return.frame = CGRect(x: 0, y: 0, width: _maxW, height: _maxH)
+			if(_Ingradient.rice){
+				let _RiceImageView : UIImageView = UIImageView(frame: CGRect(x: _x, y: _y - 8, width: 59, height: 63))
+				_RiceImageView.contentMode = .scaleAspectFit
+				_RiceImageView.clipsToBounds = true
+				_RiceImageView.image =  CONST_INGREDIENTS["rice"]
+				_return.addSubview(_RiceImageView)
+				_x += (59 + 4)
+				_cnt += 1
+			}
+
+			if(_Ingradient.pork){
+				let _PorkImageView : UIImageView = UIImageView(frame: CGRect(x: _x, y: _y - 8, width: 59, height: 63))
+				_PorkImageView.contentMode = .scaleAspectFit
+				_PorkImageView.clipsToBounds = true
+				_PorkImageView.image =  CONST_INGREDIENTS["pork"]
+				_return.addSubview(_PorkImageView)
+				_x += (59 + 4)
+				_cnt += 1
+			}
+			
+			_return.frame = CGRect(x: 0, y: 0, width: _label.frame.width + (59 * _cnt), height: 63)
+}
 		
+		return _return
+	}
+	
+	func getFooter(_width : CGFloat, i : Int) -> UIView{
+		let _return : UIView = UIView(frame: CGRect(x: 0, y: selectItemsViewModel.item_scroll.frame.size.height - 65, width: selectItemsViewModel.item_scroll.frame.size.width - 32, height: 33))
+		_return.backgroundColor = UIColor.lightGray
+		
+		let _countLabel : UILabel = UILabel(frame: CGRect(x: 8 , y: 6, width: _width, height: 30))
+		_countLabel.text = "数　量："
+		_countLabel.textColor = UIColor.white
+		_countLabel.sizeToFit()
+		_return.addSubview(_countLabel)
+		
+		let _order_label : UILabel = UILabel(frame: CGRect(x: 8 + _countLabel.frame.width, y: 2, width: 30, height: 29))
+		_order_label.tag = 201 + i
+		_order_label.text = "0"
+		_order_label.backgroundColor = UIColor.white
+		_order_label.textAlignment = .center
+		_return.addSubview(_order_label)
+		
+		let _stepper : UIStepper = UIStepper(frame: CGRect(x: 8 + _countLabel.frame.width + _order_label.frame.width + 2, y: 2, width: 21, height: 21))
+		_stepper.tag = 301 + i
+		_stepper.backgroundColor = UIColor.blue
+		_stepper.tintColor = UIColor.white
+		_stepper.minimumValue = 0
+		_stepper.maximumValue = 99
+		_stepper.value = 0
+		_stepper.autorepeat = true
+		_stepper.addTarget(self, action: #selector(self.stepperOneChanged(stepper:)), for: UIControlEvents.valueChanged)
+		_return.addSubview(_stepper)
+		
+		let _cartBtn : UIButton = UIButton(frame: CGRect(x: _return.frame.width - 65, y: 2, width: 62, height: 29))
+		_cartBtn.tag = 401 + i
+		_cartBtn.backgroundColor = UIColor.red
+		_cartBtn.setTitle("買い物かごに\n入れる", for: .normal)
+		_cartBtn.titleLabel?.font = UIFont.systemFont(ofSize: 9)
+		_cartBtn.titleLabel?.textAlignment = .center
+		_cartBtn.titleLabel?.numberOfLines = 2
+		_cartBtn.addTarget(self, action: #selector(onClickMyButton(sender:)), for: .touchUpInside)
+		
+		_return.addSubview(_cartBtn)
 		return _return
 	}
 	

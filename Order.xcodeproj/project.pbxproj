@@ -21,6 +21,9 @@
 		0A125EB41F18BAFC00B9E34E /* ConfViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A125EB31F18BAFC00B9E34E /* ConfViewController.swift */; };
 		0A125EB91F18BCB100B9E34E /* conf.png in Resources */ = {isa = PBXBuildFile; fileRef = 0A125EB71F18BCB100B9E34E /* conf.png */; };
 		0A125EBC1F18BEDA00B9E34E /* ShareController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A125EBB1F18BEDA00B9E34E /* ShareController.swift */; };
+		0A2281FA1F281CB900E8D22D /* egg.png in Resources */ = {isa = PBXBuildFile; fileRef = 0A2281F71F281CB900E8D22D /* egg.png */; };
+		0A2281FB1F281CB900E8D22D /* rice.png in Resources */ = {isa = PBXBuildFile; fileRef = 0A2281F81F281CB900E8D22D /* rice.png */; };
+		0A2281FC1F281CB900E8D22D /* pork.png in Resources */ = {isa = PBXBuildFile; fileRef = 0A2281F91F281CB900E8D22D /* pork.png */; };
 		0A4DF9CF1F1AE382002B5297 /* OrderViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A4DF9CE1F1AE382002B5297 /* OrderViewModel.swift */; };
 		0A7040B31F22D26B003BCDA6 /* うな重.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 0A7040A61F22D26B003BCDA6 /* うな重.jpg */; };
 		0A7040B41F22D26B003BCDA6 /* おにぎり.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 0A7040A71F22D26B003BCDA6 /* おにぎり.jpg */; };
@@ -86,6 +89,9 @@
 		0A125EB31F18BAFC00B9E34E /* ConfViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConfViewController.swift; sourceTree = "<group>"; };
 		0A125EB71F18BCB100B9E34E /* conf.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = conf.png; sourceTree = "<group>"; };
 		0A125EBB1F18BEDA00B9E34E /* ShareController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShareController.swift; sourceTree = "<group>"; };
+		0A2281F71F281CB900E8D22D /* egg.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = egg.png; sourceTree = "<group>"; };
+		0A2281F81F281CB900E8D22D /* rice.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = rice.png; sourceTree = "<group>"; };
+		0A2281F91F281CB900E8D22D /* pork.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = pork.png; sourceTree = "<group>"; };
 		0A4DF9CE1F1AE382002B5297 /* OrderViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OrderViewModel.swift; sourceTree = "<group>"; };
 		0A7040A61F22D26B003BCDA6 /* うな重.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "うな重.jpg"; sourceTree = "<group>"; };
 		0A7040A71F22D26B003BCDA6 /* おにぎり.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "おにぎり.jpg"; sourceTree = "<group>"; };
@@ -228,6 +234,9 @@
 		0A125EB01F18BA0F00B9E34E /* Assets */ = {
 			isa = PBXGroup;
 			children = (
+				0A2281F71F281CB900E8D22D /* egg.png */,
+				0A2281F81F281CB900E8D22D /* rice.png */,
+				0A2281F91F281CB900E8D22D /* pork.png */,
 				0AC51AF61F25DE060063E826 /* back.png */,
 				0AC51AF71F25DE060063E826 /* next.png */,
 				0AC51AF21F25D3420063E826 /* sort2.png */,
@@ -387,7 +396,9 @@
 				0AC51AF41F25D3420063E826 /* sort2.png in Resources */,
 				0A7040BF1F22D26B003BCDA6 /* 天丼.jpg in Resources */,
 				0A125EB91F18BCB100B9E34E /* conf.png in Resources */,
+				0A2281FB1F281CB900E8D22D /* rice.png in Resources */,
 				0A7040B31F22D26B003BCDA6 /* うな重.jpg in Resources */,
+				0A2281FA1F281CB900E8D22D /* egg.png in Resources */,
 				0A7040B61F22D26B003BCDA6 /* かつ丼.jpg in Resources */,
 				0A7040BD1F22D26B003BCDA6 /* 親子丼.jpg in Resources */,
 				0A125E851F18B88100B9E34E /* Assets.xcassets in Resources */,
@@ -395,6 +406,7 @@
 				0AC51AF51F25D3420063E826 /* sort1.png in Resources */,
 				0A125E831F18B88100B9E34E /* Main.storyboard in Resources */,
 				0A7040BC1F22D26B003BCDA6 /* 焼肉定食.jpg in Resources */,
+				0A2281FC1F281CB900E8D22D /* pork.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

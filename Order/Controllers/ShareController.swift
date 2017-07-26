@@ -184,6 +184,20 @@ class ShareController: NSObject {
 	func resizeImage(_image: UIImage, _size: CGSize) -> UIImage{
 		return _image.resize(size: _size)
 	}
+	
+	//通貨変換
+	func convertYen2(num : Int) -> String{
+		let _return : Double = Double(num / 110)
+		
+		let formatter = NumberFormatter()
+		formatter.numberStyle = .currency
+		formatter.maximumFractionDigits = 2
+		formatter.positiveFormat = "0.00"
+		formatter.roundingMode = .halfUp
+		formatter.locale = Locale(identifier: "en_US")
+
+		return formatter.string(from: _return as NSNumber)!
+	}
 }
 
 //EXTENSION
@@ -207,7 +221,6 @@ extension UIColor {
 }
 
 extension UIImage {
-	
 	func resize(size: CGSize) -> UIImage {
 		let widthRatio = size.width / self.size.width
 		let heightRatio = size.height / self.size.height
