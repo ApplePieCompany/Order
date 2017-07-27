@@ -76,6 +76,10 @@ class CartViewModel: NSObject, UITableViewDelegate, UITableViewDataSource{
 			}
 		}
 		
+		cell.Stepper.tag = 301 + indexPath.row
+		cell.Stepper.value = Double(self.DataSources[indexPath.row].Counts)
+		cell.Stepper.addTarget(self, action: #selector(self.stepperOneChanged(stepper:)), for: UIControlEvents.valueChanged)
+
 		
 		return cell
 	}
@@ -90,21 +94,11 @@ class CartViewModel: NSObject, UITableViewDelegate, UITableViewDataSource{
 		var _size : CGSize!
 		
 		let _w = tableView.frame.size.width - 128
-		let button : UIButton = UIButton(frame: CGRect(x: tableView.frame.size.width / 2 - (_w/2), y: 0, width: _w, height: 25))
+		let button : UIButton = UIButton(frame: CGRect(x: tableView.frame.size.width / 2 - (_w/2), y: 0, width: _w, height: 32))
 		button.backgroundColor = UIColor.red
 		button.setTitle(CONST_SECTION, for: .normal)
 		button.layer.cornerRadius = 4.0
 		returnedView.addSubview(button)
-		
-		/*
-		let label = UILabel(frame: CGRect(x: 10, y: 0, width: tableView.frame.size.width, height: 25))
-		label.text = CONST_SECTION
-		label.textColor = UIColor.lightGray
-		label.sizeToFit()
-		_size = label.frame.size
-		label.frame.size = _size
-		returnedView.addSubview(label)
-		*/
 
 		let sum = UILabel(frame: CGRect(x: 0, y: 7, width: 0, height: 0))
 		sum.text = "合計金額：\(getSum())円"
@@ -120,6 +114,25 @@ class CartViewModel: NSObject, UITableViewDelegate, UITableViewDataSource{
 	
 	func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
 	}
+	
+	func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
+		if editingStyle == .delete {
+			self.DataSources.remove(at: indexPath.row)
+			
+			let appDelegate:AppDelegate = UIApplication.shared.delegate as! AppDelegate
+			appDelegate.orderList = self.DataSources
+
+			tableView.reloadData()
+		}
+	}
+
+	internal func stepperOneChanged(stepper: UIStepper){
+		let _index = stepper.tag - 301
+		self.DataSources[_index].Counts = Int(stepper.value)
+		
+		self.myTableView.reloadData()
+	}
+
 }
 
 class CartOrderItem: UITableViewCell {
@@ -128,6 +141,7 @@ class CartOrderItem: UITableViewCell {
 	var Tanka: UILabel!
 	var Kingaku: UILabel!
 	var Photo : UIImageView!
+	var Stepper : UIStepper!
 	
 	var CONST_LABEL_NAME_FONT = UIFont(name: "Arial", size: 18)
 	var CONST_LABEL_FONT = UIFont(name: "Arial", size: 12)
@@ -136,28 +150,33 @@ class CartOrderItem: UITableViewCell {
 	override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
 		super.init(style: style, reuseIdentifier: reuseIdentifier)
 		
-		Name = makeLabel(_font: CONST_LABEL_NAME_FONT!)
+		Name = makeLabel(_font: CONST_LABEL_NAME_FONT!, _align: NSTextAlignment.left)
 		contentView.addSubview(Name)
 		
 		Count = makeLabel(_font: CONST_LABEL_FONT!)
 		contentView.addSubview(Count)
-		Count.backgroundColor = UIColor.orange
 		
 		Tanka = makeLabel(_font: CONST_LABEL_FONT!)
 		contentView.addSubview(Tanka)
-		Tanka.backgroundColor = UIColor.cyan
 		
 		Kingaku = makeLabel(_font: CONST_LABEL_FONT!)
 		contentView.addSubview(Kingaku)
-		Kingaku.backgroundColor = UIColor.orange
 		
 		Photo = UIImageView(frame: CGRect.zero)
 		contentView.addSubview(Photo)
-	}
+
+		Stepper = UIStepper(frame: CGRect.zero)
+		Stepper.backgroundColor = UIColor.blue
+		Stepper.tintColor = UIColor.white
+		Stepper.minimumValue = 0
+		Stepper.maximumValue = 99
+		Stepper.autorepeat = true
+		contentView.addSubview(Stepper)
+}
 	
-	func makeLabel(_font : UIFont) -> UILabel{
+	func makeLabel(_font : UIFont, _align: NSTextAlignment = .right) -> UILabel{
 		let _return : UILabel = UILabel(frame: CGRect.zero)
-		_return.textAlignment = .left
+		_return.textAlignment = _align
 		_return.font = _font
 		_return.numberOfLines = 2
 		_return.adjustsFontSizeToFitWidth = true
@@ -178,10 +197,12 @@ class CartOrderItem: UITableViewCell {
 		Name.frame = CGRect(x: 72, y: 5, width: frame.width - 100, height: 25)
 
 		Count.frame = CGRect(x: 72, y: 40, width: 60, height: 25)
-		Tanka.frame = CGRect(x: Count.frame.origin.x + Count.frame.size.width + 8, y: 40, width: 84, height: 25)
-		Kingaku.frame = CGRect(x: Tanka.frame.origin.x + Tanka.frame.size.width + 8, y: 40, width: 84, height: 25)
+		Tanka.frame = CGRect(x: Count.frame.origin.x + Count.frame.size.width + 8 + 12, y: 40, width: 84, height: 25)
+		Kingaku.frame = CGRect(x: Tanka.frame.origin.x + Tanka.frame.size.width + 8 + 12, y: 40, width: 84, height: 25)
 
 		Photo.frame = CGRect(x: 4, y: 4, width: 64, height: 64)
+		
+		Stepper.frame = CGRect(x: frame.width - 100, y: 5, width: 100, height: 25)
 	}
 	
 }

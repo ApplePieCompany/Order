@@ -26,6 +26,9 @@ class CartViewController: UIViewController{
 		super.init(nibName: nil, bundle: nil)
 		
 		self.title = shareController.getEnumTitle(_tag: CONST_TAG)
+		
+		let myBarButton : UIBarButtonItem = UIBarButtonItem(barButtonSystemItem: .trash, target: self, action: #selector(onClickMyButton(sender:)))
+		self.navigationItem.setRightBarButton(myBarButton, animated: true)
 	}
 	
 	required init?(coder aDecoder: NSCoder) {
@@ -114,5 +117,22 @@ class CartViewController: UIViewController{
 	// Pass the selected object to the new view controller.
 	}
 	*/
-	
+
+	internal func onClickMyButton(sender: UIButton){
+		let alert : UIAlertController = UIAlertController(title: "警告！", message: "買い物かごを空にしますか", preferredStyle: .actionSheet)
+		let buttonOK = UIAlertAction(title: "続ける",style: .default,
+			handler: { action in
+				self.orderlist = []
+				
+				let appDelegate:AppDelegate = UIApplication.shared.delegate as! AppDelegate
+				appDelegate.orderList = self.orderlist
+
+				self.navigationController?.popViewController(animated: true)
+		})
+		
+		let buttonNG = UIAlertAction(title: "キャンセル", style: .cancel, handler: nil)
+		alert.addAction(buttonOK)
+		alert.addAction(buttonNG)
+		self.present(alert, animated: true, completion:nil)
+	}
 }
