@@ -67,6 +67,15 @@ class CartViewModel: NSObject, UITableViewDelegate, UITableViewDataSource{
 		
 		let _sum = self.DataSources[indexPath.row].Counts * self.DataSources[indexPath.row].Tanka
 		cell.Kingaku.text = "\(CONST_LABEL["Kingaku"]!)\n\(shareController.convNum2str(_val: _sum))"
+
+		let _ItemModels : [ItemModel] = ItemModels().CONST_DEMODATAS
+		for itemmodel in _ItemModels{
+			if(self.DataSources[indexPath.row].Code == itemmodel.code){
+				cell.Photo.image = itemmodel.photo
+				break
+			}
+		}
+		
 		
 		return cell
 	}
@@ -108,14 +117,16 @@ class CartOrderItem: UITableViewCell {
 	var Count: UILabel!
 	var Tanka: UILabel!
 	var Kingaku: UILabel!
+	var Photo : UIImageView!
 	
 	var CONST_LABEL_NAME_FONT = UIFont(name: "Arial", size: 18)
 	var CONST_LABEL_FONT = UIFont(name: "Arial", size: 14)
 	
 	var CONST_LABEL_CGRECT : [String : CGRect] = [
-		"Count" : CGRect(x: 20, y: 40, width: 100, height: 25),
-		"Tanka" : CGRect(x: 130, y: 40, width: 100, height: 25),
-		"Kingaku" : CGRect(x: 240, y: 40, width: 100, height: 25),
+		"Count" : CGRect(x: 72, y: 40, width: 100, height: 25),
+		"Tanka" : CGRect(x: 182, y: 40, width: 100, height: 25),
+		"Kingaku" : CGRect(x: 292, y: 40, width: 100, height: 25),
+		"Photo" : CGRect(x: 4, y: 4, width: 64, height: 64),
 		]
 	
 	override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
@@ -132,6 +143,9 @@ class CartOrderItem: UITableViewCell {
 		
 		Kingaku = makeLabel(_rect : CONST_LABEL_CGRECT["Kingaku"]!)
 		contentView.addSubview(Kingaku)
+		
+		Photo = UIImageView(frame: CGRect.zero)
+		contentView.addSubview(Photo)
 	}
 	
 	func makeLabel(_font : UIFont) -> UILabel{
@@ -164,12 +178,14 @@ class CartOrderItem: UITableViewCell {
 	override func layoutSubviews() {
 		super.layoutSubviews()
 		
-		Name.frame = CGRect(x: 8, y: 5, width: frame.width - 100, height: 25)
+		Name.frame = CGRect(x: 72, y: 5, width: frame.width - 100, height: 25)
 		/*
 		Count.frame = CONST_LABEL_CGRECT["Count"]!
 		Tanka.frame = CONST_LABEL_CGRECT["Tanka"]!
 		Kingaku.frame = CONST_LABEL_CGRECT["Kingaku"]!
 		*/
+		
+		Photo.frame = CGRect(x: 4, y: 4, width: 64, height: 64)
 	}
 	
 }
