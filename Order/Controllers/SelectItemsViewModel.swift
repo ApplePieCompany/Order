@@ -90,6 +90,7 @@ class SelectItemsViewModel: NSObject {
 		self.cart_btn.tag = CONST_TAGS["cart_btn"]!
 		let _cartImage : UIImage = UIImage(named: CONST_HEADER_CARTPNG)!
 		self.cart_btn.setImage(_cartImage, for: .normal)
+		self.cart_btn.isEnabled = false
 		_return.addSubview(self.cart_btn)
 
 		self.category_scroll = UIScrollView()

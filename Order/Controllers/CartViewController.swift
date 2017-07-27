@@ -8,24 +8,23 @@
 
 import UIKit
 
-class HistoryViewController: UIViewController{
-
+class CartViewController: UIViewController{
+	
 	var shareController : ShareController = ShareController()
-	var _HistoryViewModel : HistoryViewModel!
-
+	var _CartViewModel : CartViewModel!
+	
 	var myTableView:UITableView!
 	var myCalender : Date!
-	var eventList : [Date]!
-	var currentEventNo : Int = -1
+	var orderlist : [OrderModel]!
 	
-	var CONST_TAG = 11
+	var CONST_TAG = 13
 	let CONST_WEEK = ["","日", "月", "火", "水", "木", "金", "土"]
 	var CONST_FORMATTER = "yyyy年MM月dd日"
 	let CONST_TAGS : [String : Int] = ["Header":100, "List":200]
-
+	
 	init() {
 		super.init(nibName: nil, bundle: nil)
-
+		
 		self.title = shareController.getEnumTitle(_tag: CONST_TAG)
 	}
 	
@@ -43,14 +42,7 @@ class HistoryViewController: UIViewController{
 		// Do any additional setup after loading the view.
 		let appDelegate:AppDelegate = UIApplication.shared.delegate as! AppDelegate
 		self.myCalender = appDelegate.targetDate
-		self.eventList = appDelegate.eventList
-		
-		for i in 0..<self.eventList.count{
-			if(self.eventList[i] == self.myCalender){
-				self.currentEventNo = i
-				break
-			}
-		}
+		self.orderlist = appDelegate.orderList
 		
 		self.showView(_date: self.myCalender)
 	}
@@ -68,39 +60,20 @@ class HistoryViewController: UIViewController{
 		let CONST_HEIGHT = 25
 		let CONST_WIDTH : Int = Int(self.view.frame.width)
 		let CONST_LOCATION_Y = 75
-		let CONST_FONT = UIFont(name: "Arial", size: 22)
-		let CONST_TITLES : [String: String] = ["left":"＜", "right":"＞"]
+		let CONST_FONT = UIFont(name: "Arial", size: 18)
 		
-		var leftButton : UIButton?
 		var textLabel : UILabel?
-		var rightButton : UIButton?
-
+		
 		textLabel = UILabel(frame: CGRect(x:0, y:CONST_LOCATION_Y, width:CONST_WIDTH, height:CONST_HEIGHT))
 		textLabel?.text = getHeaderText()
 		textLabel?.textAlignment = NSTextAlignment.center
 		textLabel?.font = CONST_FONT
 		_return.addSubview(textLabel!)
 		
-		leftButton = UIButton(frame: CGRect(x:0, y:CONST_LOCATION_Y, width:50, height:CONST_HEIGHT))
-		leftButton?.titleLabel?.font = CONST_FONT!
-		leftButton?.setTitle(CONST_TITLES["left"], for: .normal)
-		leftButton?.setTitleColor(UIColor.black, for:.normal)
-		leftButton?.tag = 1
-		leftButton?.addTarget(self, action: #selector(onClickMyButton(sender:)), for: .touchUpInside)
-		_return.addSubview(leftButton!)
-		
-		rightButton = UIButton(frame: CGRect(x:CONST_WIDTH-50, y:CONST_LOCATION_Y, width:50, height:CONST_HEIGHT))
-		rightButton?.titleLabel?.font = CONST_FONT!
-		rightButton?.setTitle(CONST_TITLES["right"], for: .normal)
-		rightButton?.setTitleColor(UIColor.black, for:.normal)
-		rightButton?.tag = 2
-		rightButton?.addTarget(self, action: #selector(onClickMyButton(sender:)), for: .touchUpInside)
-		_return.addSubview(rightButton!)
-		
 		_return.backgroundColor = UIColor.white
 		return _return
 	}
-
+	
 	// Calender CollectionView Header
 	func getHeaderText() -> String{
 		let fmt = DateFormatter()
@@ -108,8 +81,8 @@ class HistoryViewController: UIViewController{
 		
 		let comp = Calendar.Component.weekday
 		let weekday = NSCalendar.current.component(comp, from: self.myCalender)
-
-		return fmt.string(from: self.myCalender)+"(\(CONST_WEEK[weekday]))"
+		
+		return fmt.string(from: self.myCalender)+"(\(CONST_WEEK[weekday]))のご注文内容"
 	}
 	
 	//注文履歴画面表示
@@ -119,28 +92,16 @@ class HistoryViewController: UIViewController{
 			_View?.removeFromSuperview()
 		}
 		self.view.addSubview(self.makeHeader())
-
+		
 		if(self.view.viewWithTag(CONST_TAGS["List"]!) != nil){
 			let _View = self.view.viewWithTag(CONST_TAGS["List"]!)
 			_View?.removeFromSuperview()
 		}
-
-		self._HistoryViewModel = HistoryViewModel(_size:CGRect(x: 0, y: 110, width: self.view.frame.width, height: self.view.frame.height - 130), _date:_date)
-		self.myTableView = self._HistoryViewModel.myTableView
+		
+		self._CartViewModel = CartViewModel(_size:CGRect(x: 0, y: 110, width: self.view.frame.width, height: self.view.frame.height - 130), _orderlist: self.orderlist)
+		self.myTableView = self._CartViewModel.myTableView
 		self.myTableView.tag = CONST_TAGS["List"]!
 		self.view.addSubview(self.myTableView)
-	}
-	
-	/* カレンダー送り戻しボタン処理 */
-	internal func onClickMyButton(sender: UIButton){
-		if(sender.tag == 1 && self.currentEventNo == 0){ return }
-		if(sender.tag == 2 && self.currentEventNo == self.eventList.count-1){ return }
-
-		if(sender.tag == 1){ self.currentEventNo -= 1 }
-		if(sender.tag == 2){ self.currentEventNo += 1 }
-		
-		self.myCalender = self.eventList[self.currentEventNo]
-		self.showView(_date: self.myCalender)
 	}
 	
 	
@@ -153,5 +114,5 @@ class HistoryViewController: UIViewController{
 	// Pass the selected object to the new view controller.
 	}
 	*/
-
+	
 }

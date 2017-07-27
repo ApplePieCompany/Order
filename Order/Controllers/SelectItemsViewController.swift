@@ -328,7 +328,7 @@ class SelectItemsViewController: UIViewController, UIScrollViewDelegate{
 	}
 	
 	func getApprovedImage() -> UIImageView{
-		let _approveImageView : UIImageView = UIImageView(frame: CGRect(x: 0, y: 0, width: 256, height: 256))
+		let _approveImageView : UIImageView = UIImageView(frame: CGRect(x: selectItemsViewModel.item_scroll.frame.width / 2 - 80, y: 48, width: 128, height: 128))
 		_approveImageView.image = UIImage(named: "approved.png")
 		_approveImageView.contentMode = .scaleAspectFit
 		_approveImageView.clipsToBounds = true
@@ -370,8 +370,14 @@ class SelectItemsViewController: UIViewController, UIScrollViewDelegate{
 			selectItemsViewModel.sort_btn_IDX = selectItemsViewModel.sort_btn_IDX == 0 ? 1: 0
 			selectItemsViewModel.sort_btn.setImage(UIImage(named: selectItemsViewModel.CONST_HEADER_SORT[selectItemsViewModel.sort_btn_IDX])!, for: .normal)
 			
-		case selectItemsViewModel.CONST_TAGS["search_btn"]! , selectItemsViewModel.CONST_TAGS["cart_btn"]!:
-			print(sender.tag)
+		case selectItemsViewModel.CONST_TAGS["cart_btn"]!:
+			let appDelegate:AppDelegate = UIApplication.shared.delegate as! AppDelegate
+			appDelegate.orderList = self._order_list
+
+			let _CartViewController : CartViewController = CartViewController()
+			self.navigationController?.pushViewController(_CartViewController, animated: true)
+
+		case selectItemsViewModel.CONST_TAGS["search_btn"]!: print("SEARCH")
 			
 		case 101..<105:
 			for i in 101...104{ selectItemsViewModel.category_scroll.viewWithTag(i)?.backgroundColor = UIColor.lightGray }
@@ -386,6 +392,7 @@ class SelectItemsViewController: UIViewController, UIScrollViewDelegate{
 			let _IsUpd = self.upsertOrder(_order: OrderModel(_OrderYMD: self.myCalender, _Code: self._item_list[sender.tag - 401].code, _Name: self._item_list[sender.tag - 401].name, _Counts: Int(_target.value), _Tanka: self._item_list[sender.tag - 401].tanka))
 			
 			selectItemsViewModel.cart_btn.setImage(UIImage(named: "cartplus.png"), for: .normal)
+			selectItemsViewModel.cart_btn.isEnabled = true
 			
 			let _alreadyTag = sender.tag + 100
 			selectItemsViewModel.item_scroll.viewWithTag(_alreadyTag)!.backgroundColor = UIColor.white.withAlphaComponent(0.75)
@@ -404,7 +411,6 @@ class SelectItemsViewController: UIViewController, UIScrollViewDelegate{
 			else{
 				selectItemsViewModel.item_scroll.viewWithTag(_alreadyTag)!.addSubview(self.getApprovedImage())
 			}
-			
 			
 		case selectItemsViewModel.CONST_TAGS["back_btn"]!, selectItemsViewModel.CONST_TAGS["next_btn"]!:
 			var _pos : CGPoint = CGPoint(x: 0, y: 0)

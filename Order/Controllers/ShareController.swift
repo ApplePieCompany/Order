@@ -14,6 +14,7 @@ class ShareController: NSObject {
 		case Order = "配送日選択"
 		case History = "注文履歴"
 		case Select = "商品選択"
+		case Cart = "買い物かご"
 		case Conf = "利用者登録"
 	}
 	
@@ -23,6 +24,7 @@ class ShareController: NSObject {
 		case 1:return EnumTitle.Order.rawValue
 		case 11:return EnumTitle.History.rawValue
 		case 12:return EnumTitle.Select.rawValue
+		case 13:return EnumTitle.Cart.rawValue
 		case 2:return EnumTitle.Conf.rawValue
 		default: return EnumTitle.Conf.rawValue
 		}
