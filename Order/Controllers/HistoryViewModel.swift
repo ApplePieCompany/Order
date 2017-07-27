@@ -55,10 +55,10 @@ class HistoryViewModel: NSObject, UITableViewDelegate, UITableViewDataSource{
 		let cell = tableView.dequeueReusableCell(withIdentifier: NSStringFromClass(OrderItem.self), for: indexPath) as! OrderItem
 		cell.Name.text = self.DataSources[indexPath.row].Name
 		
-		cell.Count.text = "\(CONST_LABEL["Count"]!)\n\(shareController.convNum2str(_val: self.DataSources[indexPath.row].Count))"
+		cell.Count.text = "\(CONST_LABEL["Count"]!)\n\(shareController.convNum2str(_val: self.DataSources[indexPath.row].Counts))"
 		cell.Tanka.text = "\(CONST_LABEL["Tanka"]!)\n\(shareController.convNum2str(_val: self.DataSources[indexPath.row].Tanka))"
 
-		let _sum = self.DataSources[indexPath.row].Count * self.DataSources[indexPath.row].Tanka
+		let _sum = self.DataSources[indexPath.row].Counts * self.DataSources[indexPath.row].Tanka
 		cell.Kingaku.text = "\(CONST_LABEL["Kingaku"]!)\n\(shareController.convNum2str(_val: _sum))"
 
 		return cell

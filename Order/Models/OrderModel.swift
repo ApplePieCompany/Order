@@ -13,14 +13,17 @@ class OrderModel: NSObject {
 	public var OrderYMD : Date!
 	public var Code : String!
 	public var Name : String!
-	public var Count : Int!
+	public var Counts : Int!
 	public var Tanka : Int!
 
-	init(_OrderYMD : Date = Date(), _Code : String = "", _Name : String, _Count : Int, _Tanka : Int) {
+	override init(){		
+	}
+	
+	init(_OrderYMD : Date = Date(), _Code : String = "", _Name : String, _Counts : Int, _Tanka : Int) {
 		self.OrderYMD = _OrderYMD
 		self.Code = _Code
 		self.Name = _Name
-		self.Count = _Count
+		self.Counts = _Counts
 		self.Tanka = _Tanka
 	}
 

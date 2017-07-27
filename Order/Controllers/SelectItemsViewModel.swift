@@ -80,13 +80,13 @@ class SelectItemsViewModel: NSObject {
 		_return.addSubview(self.sort_btn)
 		*/
 
-		self.search_btn = UIButton(frame: CGRect(x: CONST_FRAMESIZE.width - 16 - 16 - 16, y: 8, width: 16, height: 16))
+		self.search_btn = UIButton(frame: CGRect(x: CONST_FRAMESIZE.width - 16 - 40, y: 8, width: 16, height: 16))
 		self.search_btn.tag = CONST_TAGS["search_btn"]!
 		let _searchImage : UIImage = UIImage(named: CONST_HEADER_SEARCHPNG)!
 		self.search_btn.setImage(_searchImage, for: .normal)
 		_return.addSubview(self.search_btn)
 
-		self.cart_btn = UIButton(frame: CGRect(x: CONST_FRAMESIZE.width - 16 - 8, y: 8, width: 16, height: 16))
+		self.cart_btn = UIButton(frame: CGRect(x: CONST_FRAMESIZE.width - 16 - 16, y: 8, width: 16, height: 16))
 		self.cart_btn.tag = CONST_TAGS["cart_btn"]!
 		let _cartImage : UIImage = UIImage(named: CONST_HEADER_CARTPNG)!
 		self.cart_btn.setImage(_cartImage, for: .normal)

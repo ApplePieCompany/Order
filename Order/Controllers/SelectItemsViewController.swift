@@ -181,7 +181,23 @@ class SelectItemsViewController: UIViewController, UIScrollViewDelegate{
 
 		let _maskView : UIView = UIView(frame: CGRect(x: 0, y: _mask_y, width: _width + 8, height: _return.frame.height - _imageView.frame.height - _footerView.frame.height - 14))
 		_maskView.tag = 501 + i
-		_maskView.backgroundColor = UIColor.clear
+		
+		let _tempOrder = self.getOrder(_code: self._item_list[i].code)
+		if(_tempOrder.Counts != nil){
+			_maskView.backgroundColor = UIColor.white.withAlphaComponent(0.75)
+			_maskView.addSubview(self.getApprovedImage())
+			
+			let _targetStepper : UIStepper = _footerView.viewWithTag(_maskView.tag - 200) as! UIStepper
+			_targetStepper.value = Double(_tempOrder.Counts!)
+			
+			let _targetLabel : UILabel = _footerView.viewWithTag(_maskView.tag - 300) as! UILabel
+			_targetLabel.text =  String(_tempOrder.Counts!)
+
+			let _targetButton : UIButton = _footerView.viewWithTag(_maskView.tag - 100) as! UIButton
+			_targetButton.setTitle("買い物かごを\n修正する", for: .normal)
+		}
+		else{ _maskView.backgroundColor = UIColor.clear }
+		
 		_return.addSubview(_maskView)
 		
 		return _return
@@ -298,15 +314,41 @@ class SelectItemsViewController: UIViewController, UIScrollViewDelegate{
 		else{ selectItemsViewModel.item_next_btn.isEnabled = true }
 	}
 	
-	func IsOrder(_code: String) -> Bool{
-		var _return : Bool = false
+	func getOrder(_code: String) -> OrderModel{
+		var _return : OrderModel = OrderModel()
 		
 		for order in self._order_list{
 			if(order.OrderYMD == self.myCalender && order.Code == _code){
-				_return = true
+				_return = OrderModel(_OrderYMD: order.OrderYMD, _Code: order.Code, _Name: order.Name, _Counts: order.Counts, _Tanka: order.Tanka)
 				break
 			}
 		}
+		
+		return _return
+	}
+	
+	func getApprovedImage() -> UIImageView{
+		let _approveImageView : UIImageView = UIImageView(frame: CGRect(x: 0, y: 0, width: 256, height: 256))
+		_approveImageView.image = UIImage(named: "approved.png")
+		_approveImageView.contentMode = .scaleAspectFit
+		_approveImageView.clipsToBounds = true
+		return _approveImageView
+	}
+	
+	func upsertOrder(_order : OrderModel) -> Bool{
+		var _return : Bool = false
+		var i = 0
+		
+		for order in self._order_list{
+			if(order.OrderYMD == _order.OrderYMD && order.Code == _order.Code){
+				self._order_list[i] = _order
+				_return = true
+				break
+			}
+			i += 1
+		}
+		
+		if(!_return){ self._order_list.append(_order) }
 		
 		return _return
 	}
@@ -341,17 +383,28 @@ class SelectItemsViewController: UIViewController, UIScrollViewDelegate{
 		case 401..<500:
 			let _tag = sender.tag - 100
 			let _target : UIStepper = selectItemsViewModel.item_scroll.viewWithTag(_tag) as! UIStepper
-			let _order : OrderModel = OrderModel(_OrderYMD: self.myCalender, _Code: self._item_list[sender.tag - 401].code, _Name: self._item_list[sender.tag - 401].name, _Count: Int(_target.value), _Tanka: self._item_list[sender.tag - 401].tanka)
-			self._order_list.append(_order)
+			let _IsUpd = self.upsertOrder(_order: OrderModel(_OrderYMD: self.myCalender, _Code: self._item_list[sender.tag - 401].code, _Name: self._item_list[sender.tag - 401].name, _Counts: Int(_target.value), _Tanka: self._item_list[sender.tag - 401].tanka))
+			
+			selectItemsViewModel.cart_btn.setImage(UIImage(named: "cartplus.png"), for: .normal)
 			
 			let _alreadyTag = sender.tag + 100
-			let _approveImageView : UIImageView = UIImageView(frame: CGRect(x: 0, y: 0, width: 256, height: 256))
-			_approveImageView.image = UIImage(named: "approved.png")
-			_approveImageView.contentMode = .scaleAspectFit
-			_approveImageView.clipsToBounds = true
 			selectItemsViewModel.item_scroll.viewWithTag(_alreadyTag)!.backgroundColor = UIColor.white.withAlphaComponent(0.75)
-			selectItemsViewModel.item_scroll.viewWithTag(_alreadyTag)!.addSubview(_approveImageView)
-
+			
+			if(_IsUpd){
+				let _UiView : UIView = selectItemsViewModel.item_scroll.viewWithTag(_alreadyTag)!
+				var _UiImageView : UIImageView!
+				
+				for _view in _UiView.subviews{
+					if(String(describing:type(of: _view)) == "UIImageView"){
+						_UiImageView = _view as! UIImageView
+						_UiImageView.image = UIImage(named: "Rejected.png")
+					}
+				}
+			}
+			else{
+				selectItemsViewModel.item_scroll.viewWithTag(_alreadyTag)!.addSubview(self.getApprovedImage())
+			}
+			
 			
 		case selectItemsViewModel.CONST_TAGS["back_btn"]!, selectItemsViewModel.CONST_TAGS["next_btn"]!:
 			var _pos : CGPoint = CGPoint(x: 0, y: 0)

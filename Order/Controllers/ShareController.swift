@@ -159,7 +159,7 @@ class ShareController: NSObject {
 
 		for i in 0..<CONST_COUNT{
 			let _no = (i+1)
-			_return.append(OrderModel(_Name: "\(CONST_NAME)_\(_no)", _Count : _no, _Tanka : 100))
+			_return.append(OrderModel(_Name: "\(CONST_NAME)_\(_no)", _Counts : _no, _Tanka : 100))
 		}
 		
 		return _return
