@@ -16,7 +16,7 @@ class CartViewModel: NSObject, UITableViewDelegate, UITableViewDataSource{
 	
 	
 	var CONST_SIZE : CGRect!
-	var CONST_SECTION = "ご注文商品"
+	var CONST_SECTION = "ご注文商品を確定する"
 	
 	var CONST_LABEL : [String:String] = [
 		"Count":"ご注文数量",
@@ -89,17 +89,27 @@ class CartViewModel: NSObject, UITableViewDelegate, UITableViewDataSource{
 		
 		var _size : CGSize!
 		
-		let label = UILabel(frame: CGRect(x: 10, y: 24, width: tableView.frame.size.width, height: 25))
+		let _w = tableView.frame.size.width - 128
+		let button : UIButton = UIButton(frame: CGRect(x: tableView.frame.size.width / 2 - (_w/2), y: 0, width: _w, height: 25))
+		button.backgroundColor = UIColor.red
+		button.setTitle(CONST_SECTION, for: .normal)
+		button.layer.cornerRadius = 4.0
+		returnedView.addSubview(button)
+		
+		/*
+		let label = UILabel(frame: CGRect(x: 10, y: 0, width: tableView.frame.size.width, height: 25))
 		label.text = CONST_SECTION
 		label.textColor = UIColor.lightGray
 		label.sizeToFit()
 		_size = label.frame.size
 		label.frame.size = _size
 		returnedView.addSubview(label)
+		*/
 
 		let sum = UILabel(frame: CGRect(x: 0, y: 7, width: 0, height: 0))
 		sum.text = "合計金額：\(getSum())円"
 		sum.font = UIFont.systemFont(ofSize: 12)
+		sum.textColor = UIColor.red
 		sum.sizeToFit()
 		_size = sum.frame.size
 		sum.frame = CGRect(x: tableView.frame.size.width - _size.width - 16, y: 36, width: _size.width, height: _size.height)
@@ -120,14 +130,8 @@ class CartOrderItem: UITableViewCell {
 	var Photo : UIImageView!
 	
 	var CONST_LABEL_NAME_FONT = UIFont(name: "Arial", size: 18)
-	var CONST_LABEL_FONT = UIFont(name: "Arial", size: 14)
+	var CONST_LABEL_FONT = UIFont(name: "Arial", size: 12)
 	
-	var CONST_LABEL_CGRECT : [String : CGRect] = [
-		"Count" : CGRect(x: 72, y: 40, width: 100, height: 25),
-		"Tanka" : CGRect(x: 182, y: 40, width: 100, height: 25),
-		"Kingaku" : CGRect(x: 292, y: 40, width: 100, height: 25),
-		"Photo" : CGRect(x: 4, y: 4, width: 64, height: 64),
-		]
 	
 	override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
 		super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -135,14 +139,17 @@ class CartOrderItem: UITableViewCell {
 		Name = makeLabel(_font: CONST_LABEL_NAME_FONT!)
 		contentView.addSubview(Name)
 		
-		Count = makeLabel(_rect : CONST_LABEL_CGRECT["Count"]!)
+		Count = makeLabel(_font: CONST_LABEL_FONT!)
 		contentView.addSubview(Count)
+		Count.backgroundColor = UIColor.orange
 		
-		Tanka = makeLabel(_rect : CONST_LABEL_CGRECT["Tanka"]!)
+		Tanka = makeLabel(_font: CONST_LABEL_FONT!)
 		contentView.addSubview(Tanka)
+		Tanka.backgroundColor = UIColor.cyan
 		
-		Kingaku = makeLabel(_rect : CONST_LABEL_CGRECT["Kingaku"]!)
+		Kingaku = makeLabel(_font: CONST_LABEL_FONT!)
 		contentView.addSubview(Kingaku)
+		Kingaku.backgroundColor = UIColor.orange
 		
 		Photo = UIImageView(frame: CGRect.zero)
 		contentView.addSubview(Photo)
@@ -152,17 +159,7 @@ class CartOrderItem: UITableViewCell {
 		let _return : UILabel = UILabel(frame: CGRect.zero)
 		_return.textAlignment = .left
 		_return.font = _font
-		_return.adjustsFontSizeToFitWidth = true
-		return _return
-	}
-	
-	func makeLabel(_rect: CGRect) -> UILabel{
-		let _return : UILabel = UILabel(frame: _rect)
-		_return.textAlignment = .center
-		_return.font = CONST_LABEL_FONT
 		_return.numberOfLines = 2
-		_return.baselineAdjustment = .none
-		_return.lineBreakMode = .byTruncatingTail
 		_return.adjustsFontSizeToFitWidth = true
 		return _return
 	}
@@ -179,12 +176,11 @@ class CartOrderItem: UITableViewCell {
 		super.layoutSubviews()
 		
 		Name.frame = CGRect(x: 72, y: 5, width: frame.width - 100, height: 25)
-		/*
-		Count.frame = CONST_LABEL_CGRECT["Count"]!
-		Tanka.frame = CONST_LABEL_CGRECT["Tanka"]!
-		Kingaku.frame = CONST_LABEL_CGRECT["Kingaku"]!
-		*/
-		
+
+		Count.frame = CGRect(x: 72, y: 40, width: 60, height: 25)
+		Tanka.frame = CGRect(x: Count.frame.origin.x + Count.frame.size.width + 8, y: 40, width: 84, height: 25)
+		Kingaku.frame = CGRect(x: Tanka.frame.origin.x + Tanka.frame.size.width + 8, y: 40, width: 84, height: 25)
+
 		Photo.frame = CGRect(x: 4, y: 4, width: 64, height: 64)
 	}
 	
